@@ -1,0 +1,1 @@
+# Classse do fantasma
