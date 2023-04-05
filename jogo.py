@@ -1,5 +1,3 @@
-# Colocar o game controller
-# COlocar a main
 import pygame
 from constantes import *
 from pacman import *
@@ -12,38 +10,38 @@ class Jogo():
     # Checar eventos
     def __init__(self):
         pygame.init()
-        self.tela = pygame.display.set_mode(TAMANHO_TELA, 0)
+        self.tela = pygame.display.set_mode(TAMANHO_TELA, 1)
         self.tempo = pygame.time.Clock()
-        self.pacman = Pacman((200, 200))
+
+    def inicia_jogo(self):
+        self.pacman = Pacman()
         self.mapa = Mapa(TAMANHO_TELA, self.pacman)
         self.mapa.adicionar_movivel(self.pacman)
 
-    def inicia_jogo(self):
-        pass
     def atualiza(self):
         # Checar se o pacman ta vivo
-        self.checar_eventos()
+        self.calcular_regras()
         self.desenha()
+        self.checar_eventos()
 
     def checar_eventos(self):
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                exit()
-        self.mapa.processar_eventos(pygame.event.get())
+        evento = pygame.event.get()
+        self.mapa.processar_eventos(evento)
+        self.pacman.processar_eventos(evento)
 
+    def calcular_regras(self):
+        self.pacman.calcular_regra()
+        self.mapa.calcular_regra()
 
     def desenha(self):
-        self.pacman.desenha(self.tela)
+        self.tela.fill(PRETO)
         self.mapa.desenha(self.tela)
+        self.pacman.desenha(self.tela)
         pygame.display.update()
+        pygame.time.delay(100)
 
 if __name__ == "__main__":
     jogo = Jogo()
     jogo.inicia_jogo()
     while True:
-        # Calculo de regras
-        # Desenha
-        # Evento
         jogo.atualiza()
-
-
