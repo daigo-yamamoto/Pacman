@@ -13,15 +13,22 @@ class Pacman(object):
         self.cor = AMARELO
         self.no = no
         self.definePosicao()
+        self.alvo = no
 
     def definePosicao(self):
         self.posicao = self.no.posicao.copia()
 
     def atualiza(self, dt):
+        self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
         direcao = self.getTeclaValida()
-        self.direcao = direcao
-        self.no = self.pegaNovoAlvo(direcao)
-        self.definePosicao()
+        if self.ultrapassouAlvo():
+            self.no = self.alvo
+            self.alvo = self.pegaNovoAlvo(direcao)
+            if self.alvo is not self.no:
+                self.direcao = direcao
+            else:
+                self.direcao = PARADO
+            self.definePosicao()
 
     def direcaoValida(self, direcao):
         if direcao is not PARADO:
@@ -49,3 +56,12 @@ class Pacman(object):
     def render(self, tela):
         p = self.posicao.intTupla()
         pygame.draw.circle(tela, AMARELO, p, self.raio)
+
+    def ultrapassouAlvo(self):
+        if self.alvo is not None:
+            vec1 = self.alvo.posicao - self.no.posicao
+            vec2 = self.posicao - self.no.posicao
+            no2alvo = vec1.distanciaQuadrado()
+            no2self = vec2.distanciaQuadrado()
+            return no2self >= no2alvo
+        return False
