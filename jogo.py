@@ -1,47 +1,42 @@
 import pygame
+from pygame.locals import *
 from constantes import *
-from pacman import *
-from mapa import *
+from pacman import Pacman
 
-class Jogo():
-    # Deve ter as coisas que para o jogo, como:
-    # iniciar o pygame
-    # Atualizar a tela
-    # Checar eventos
+class GameController(object):
     def __init__(self):
         pygame.init()
-        self.tela = pygame.display.set_mode(TAMANHO_TELA, 1)
+        self.tela = pygame.display.set_mode(TAMANHO_TELA, 0, 32)
+        self.tela_fundo = None
         self.tempo = pygame.time.Clock()
 
-    def inicia_jogo(self):
+    def setTelaFundo(self):
+        self.tela_fundo = pygame.surface.Surface(TAMANHO_TELA).convert()
+        self.tela_fundo.fill(PRETO)
+
+    def comecaJogo(self):
+        self.setTelaFundo()
         self.pacman = Pacman()
-        self.mapa = Mapa(TAMANHO_TELA, self.pacman)
-        self.mapa.adicionar_movivel(self.pacman)
 
     def atualiza(self):
-        # Checar se o pacman ta vivo
-        self.calcular_regras()
-        self.desenha()
-        self.checar_eventos()
+        dt = self.tempo.tick(30) / 1000.0
+        self.pacman.atualiza(dt)
+        self.checaEvento()
+        self.render()
 
-    def checar_eventos(self):
-        evento = pygame.event.get()
-        self.mapa.processar_eventos(evento)
-        self.pacman.processar_eventos(evento)
+    def checaEvento(self):
+        for evento in pygame.event.get():
+            if evento.type == QUIT:
+                exit()
 
-    def calcular_regras(self):
-        self.pacman.calcular_regra()
-        self.mapa.calcular_regra()
-
-    def desenha(self):
-        self.tela.fill(PRETO)
-        self.mapa.desenha(self.tela)
-        self.pacman.desenha(self.tela)
+    def render(self):
+        self.tela.blit(self.tela_fundo, (0,0))
+        self.pacman.render(self.tela)
         pygame.display.update()
-        pygame.time.delay(100)
+
 
 if __name__ == "__main__":
-    jogo = Jogo()
-    jogo.inicia_jogo()
+    jogo = GameController()
+    jogo.comecaJogo()
     while True:
         jogo.atualiza()

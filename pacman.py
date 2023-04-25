@@ -1,57 +1,35 @@
 import pygame
+from pygame.locals import *
+from vetor import Vetor2
 from constantes import *
-class Pacman():
+
+class Pacman(object):
     def __init__(self):
-        self.coluna = 1
-        self.linha = 1
-        self.centro_x = 400
-        self.centro_y = 300
-        self.tamanho = TAMANHO_NO
-        self.vel_x = 0
-        self.vel_y = 0
-        self.raio = self.tamanho // 2
-        self.coluna_intencao = self.coluna
-        self.linha_intencao = self.linha
+        self.nome = PACMAN
+        self.posicao = Vetor2(200, 400)
+        self.direcoes = {PARADO:Vetor2(), CIMA:Vetor2(0,-1), BAIXO:Vetor2(0,1), ESQUERDA:Vetor2(-1,0), DIREITA:Vetor2(1,0)}
+        self.direcao = PARADO
+        self.velocidade = 100
+        self.raio = 10
+        self.cor = AMARELO
 
-    def desenha(self, tela):
-        pygame.draw.circle(tela, AMARELO, (self.centro_x, self.centro_y), self.raio, 0)
+    def atualiza(self, dt):
+        self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
+        direcao = self.getTeclaValida()
+        self.direcao = direcao
 
-        olho_x = int(self.centro_x + self.raio / 3)
-        olho_y = int(self.centro_y - self.raio * 0.70)
-        olho_raio = int(self.raio / 10)
-        pygame.draw.circle(tela, PRETO, (olho_x, olho_y), olho_raio, 0)
+    def getTeclaValida(self):
+        tecla_pessionada = pygame.key.get_pressed()
+        if tecla_pessionada[K_UP]:
+            return CIMA
+        if tecla_pessionada[K_DOWN]:
+            return BAIXO
+        if tecla_pessionada[K_LEFT]:
+            return ESQUERDA
+        if tecla_pessionada[K_RIGHT]:
+            return DIREITA
+        return PARADO
 
-    def calcular_regra(self):
-        self.coluna_intencao = self.coluna + self.vel_x
-        self.linha_intencao = self.linha + self.vel_y
-        self.centro_x = int(self.coluna * self.tamanho + self.raio)
-        self.centro_y = int(self.linha * self.tamanho + self.raio)
-
-    def processar_eventos(self, eventos):
-        for e in eventos:
-            if e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_RIGHT:
-                    self.vel_x = VELOCIDADE
-                elif e.key == pygame.K_LEFT:
-                    self.vel_x = -VELOCIDADE
-                elif e.key == pygame.K_UP:
-                    self.vel_y = -VELOCIDADE
-                elif e.key == pygame.K_DOWN:
-                    self.vel_y = VELOCIDADE
-            elif e.type == pygame.KEYUP:
-                if e.key == pygame.K_RIGHT:
-                    self.vel_x = 0
-                elif e.key == pygame.K_LEFT:
-                    self.vel_x = 0
-                elif e.key == pygame.K_UP:
-                    self.vel_y = 0
-                elif e.key == pygame.K_DOWN:
-                    self.vel_y = 0
-
-    def aceitar_movimento(self):
-        self.linha = self.linha_intencao
-        self.coluna = self.coluna_intencao
-
-    def recusar_movimento(self):
-        self.linha_intencao = self.linha
-        self.coluna_intencao = self.coluna
+    def render(self, tela):
+        p = self.posicao.eh_int()
+        pygame.draw.circle(tela, (255, 0, 0), p, self.raio)
