@@ -4,7 +4,7 @@ class Vetor2(object):
     def __init__(self, x=0, y=0):
         self.x = x
         self.y = y
-        self.thresh = 0.000001
+        self.erro = 0.000001
 
     def __add__(self, outro_vetor):
         return Vetor2(self.x + outro_vetor.x, self.y + outro_vetor.y)
@@ -22,8 +22,8 @@ class Vetor2(object):
         return self.__div__(numero)
 
     def __eq__(self, outro_vetor):
-        if abs(self.x - outro_vetor.x) < self.thresh:
-            if abs(self.y - outro_vetor.y) < self.thresh:
+        if abs(self.x - outro_vetor.x) < self.erro:
+            if abs(self.y - outro_vetor.y) < self.erro:
                 return True
         return False
 
