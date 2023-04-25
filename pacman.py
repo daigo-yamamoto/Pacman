@@ -4,19 +4,35 @@ from vetor import Vetor2
 from constantes import *
 
 class Pacman(object):
-    def __init__(self):
+    def __init__(self, no):
         self.nome = PACMAN
-        self.posicao = Vetor2(200, 400)
         self.direcoes = {PARADO:Vetor2(), CIMA:Vetor2(0,-1), BAIXO:Vetor2(0,1), ESQUERDA:Vetor2(-1,0), DIREITA:Vetor2(1,0)}
         self.direcao = PARADO
         self.velocidade = 100
         self.raio = 10
         self.cor = AMARELO
+        self.no = no
+        self.definePosicao()
+
+    def definePosicao(self):
+        self.posicao = self.no.posicao.copia()
 
     def atualiza(self, dt):
-        self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
         direcao = self.getTeclaValida()
         self.direcao = direcao
+        self.no = self.pegaNovoAlvo(direcao)
+        self.definePosicao()
+
+    def direcaoValida(self, direcao):
+        if direcao is not PARADO:
+            if self.no.vizinhos[direcao] is not None:
+                return True
+        return False
+
+    def pegaNovoAlvo(self, direcao):
+        if self.direcaoValida(direcao):
+            return self.no.vizinhos[direcao]
+        return self.no
 
     def getTeclaValida(self):
         tecla_pessionada = pygame.key.get_pressed()
