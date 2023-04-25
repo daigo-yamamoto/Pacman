@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 from constantes import *
 from pacman import Pacman
-from no import NodeGroup
+from no import GrupoNo
 
 class GameController(object):
     def __init__(self):
@@ -17,9 +17,8 @@ class GameController(object):
 
     def comecaJogo(self):
         self.setTelaFundo()
-        self.no = NodeGroup()
-        self.no.setupTestNodes()
-        self.pacman = Pacman(self.no.listaNo[0])
+        self.no = GrupoNo("mapa.txt")
+        self.pacman = Pacman(self.no.pegaNoInicial())
 
     def atualiza(self):
         dt = self.tempo.tick(30) / 1000.0

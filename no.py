@@ -1,8 +1,9 @@
 import pygame
+import numpy as np
 from vetor import Vetor2
 from constantes import *
 
-class Node(object):
+class No(object):
     def __init__(self, x, y):
         self.posicao = Vetor2(x, y)
         self.vizinhos = {CIMA: None, BAIXO: None, ESQUERDA: None, DIREITA: None}
@@ -15,37 +16,76 @@ class Node(object):
                 pygame.draw.line(tela, BRANCO, line_start, line_end, 4)
                 pygame.draw.circle(tela, VERMELHO, self.posicao.intTupla(), 12)
 
-class NodeGroup(object):
-    def __init__(self):
-        self.listaNo = []
+class GrupoNo(object):
+    def __init__(self, nivel):
+        self.nivel = nivel
+        self.dicionarioNo = {}
+        self.simboloNo = ['+']
+        self.simboloCaminho = ['.']
+        data = self.leituraMapa(nivel)
+        self.criarTabelaNo(data)
+        self.conectaHorizontal(data)
+        self.conectaVertical(data)
 
-    def setupTestNodes(self):
-        nodeA = Node(80, 80)
-        nodeB = Node(160, 80)
-        nodeC = Node(80, 160)
-        nodeD = Node(160, 160)
-        nodeE = Node(208, 160)
-        nodeF = Node(80, 320)
-        nodeG = Node(208, 320)
-        nodeA.vizinhos[DIREITA] = nodeB
-        nodeA.vizinhos[BAIXO] = nodeC
-        nodeB.vizinhos[ESQUERDA] = nodeA
-        nodeB.vizinhos[BAIXO] = nodeD
-        nodeC.vizinhos[CIMA] = nodeA
-        nodeC.vizinhos[DIREITA] = nodeD
-        nodeC.vizinhos[BAIXO] = nodeF
-        nodeD.vizinhos[CIMA] = nodeB
-        nodeD.vizinhos[ESQUERDA] = nodeC
-        nodeD.vizinhos[DIREITA] = nodeE
-        nodeE.vizinhos[ESQUERDA] = nodeD
-        nodeE.vizinhos[BAIXO] = nodeG
-        nodeF.vizinhos[CIMA] = nodeC
-        nodeF.vizinhos[DIREITA] = nodeG
-        nodeG.vizinhos[CIMA] = nodeE
-        nodeG.vizinhos[ESQUERDA] = nodeF
+    def leituraMapa(self, arquivo_texto):
+        return np.loadtxt(arquivo_texto, dtype='<U1')
 
-        self.listaNo = [nodeA, nodeB, nodeC, nodeD, nodeE, nodeF, nodeG]
+    def criarTabelaNo(self, dados, xoffset=0, yoffset=0):
+        for linha in list(range(dados.shape[0])):
+            for coluna in list(range(dados.shape[1])):
+                if dados[linha][coluna] in self.simboloNo:
+                    x, y = self.constroiMapa(coluna+xoffset, linha+yoffset)
+                    self.dicionarioNo[(x, y)] = No(x, y)
+
+    def constroiMapa(self, x, y):
+        return x*ALTURA_NO, y*LARGURA_NO
+
+    def conectaHorizontal(self, dados, xoffset=0, yoffset=0):
+        for linha in list(range(dados.shape[0])):
+            chave = None
+            for coluna in list(range(dados.shape[1])):
+                if dados[linha][coluna] in self.simboloNo:
+                    if chave is None:
+                        chave = self.constroiMapa(coluna + xoffset, linha + yoffset)
+                    else:
+                        outra_chave = self.constroiMapa(coluna + xoffset, linha + yoffset)
+                        self.dicionarioNo[chave].vizinhos[DIREITA] = self.dicionarioNo[outra_chave]
+                        self.dicionarioNo[outra_chave].vizinhos[ESQUERDA] = self.dicionarioNo[chave]
+                        chave = outra_chave
+                elif dados[linha][coluna] not in self.simboloCaminho:
+                    chave = None
+
+    def conectaVertical(self, dados, xoffset=0, yoffset=0):
+        dadosT = dados.transpose()
+        for coluna in list(range(dadosT.shape[0])):
+            chave = None
+            for linha in list(range(dadosT.shape[1])):
+                if dadosT[coluna][linha] in self.simboloNo:
+                    if chave is None:
+                        chave = self.constroiMapa(coluna + xoffset, linha + yoffset)
+                    else:
+                        otherkey = self.constroiMapa(coluna + xoffset, linha + yoffset)
+                        self.dicionarioNo[chave].vizinhos[BAIXO] = self.dicionarioNo[otherkey]
+                        self.dicionarioNo[otherkey].vizinhos[CIMA] = self.dicionarioNo[chave]
+                        chave = otherkey
+                elif dadosT[coluna][linha] not in self.simboloCaminho:
+                    chave = None
+
+    def pegaNoPixel(self, xpixel, ypixel):
+        if (xpixel, ypixel) in self.dicionarioNo.keys():
+            return self.dicionarioNo[(xpixel, ypixel)]
+        return None
+
+    def pegaNoTiles(self, col, row):
+        x, y = self.constroiMapa(col, row)
+        if (x, y) in self.dicionarioNo.keys():
+            return self.dicionarioNo[(x, y)]
+        return None
+
+    def pegaNoInicial(self):
+        nos = list(self.dicionarioNo.values())
+        return nos[0]
 
     def render(self, tela):
-        for node in self.listaNo:
-            node.render(tela)
+        for no in self.dicionarioNo.values():
+            no.render(tela)
