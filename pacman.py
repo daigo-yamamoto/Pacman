@@ -21,14 +21,20 @@ class Pacman(object):
     def atualiza(self, dt):
         self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
         direcao = self.getTeclaValida()
+
         if self.ultrapassouAlvo():
             self.no = self.alvo
             self.alvo = self.pegaNovoAlvo(direcao)
             if self.alvo is not self.no:
                 self.direcao = direcao
             else:
+                self.alvo = self.pegaNovoAlvo(self.direcao)
+            if self.alvo is self.no:
                 self.direcao = PARADO
             self.definePosicao()
+        else:
+            if self.direcaoOposta(direcao):
+                self.direcaoReversa()
 
     def direcaoValida(self, direcao):
         if direcao is not PARADO:
@@ -64,4 +70,16 @@ class Pacman(object):
             no2alvo = vec1.distanciaQuadrado()
             no2self = vec2.distanciaQuadrado()
             return no2self >= no2alvo
+        return False
+
+    def direcaoReversa(self):
+        self.direcao *= -1
+        temp = self.no
+        self.no = self.alvo
+        self.alvo = temp
+
+    def direcaoOposta(self, direcao):
+        if direcao is not PARADO:
+            if direcao == self.direcao * -1:
+                return True
         return False
