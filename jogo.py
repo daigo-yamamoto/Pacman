@@ -38,7 +38,6 @@ class GameController(object):
         self.pacman.render(self.tela)
         pygame.display.update()
 
-
 if __name__ == "__main__":
     jogo = GameController()
     jogo.comecaJogo()

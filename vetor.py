@@ -18,11 +18,6 @@ class Vetor2(object):
     def __mul__(self, numero):
         return Vetor2(self.x * numero, self.y * numero)
 
-    def __div__(self, numero):
-        if numero != 0:
-            return Vetor2(self.x / float(numero), self.y / float(numero))
-        return None
-
     def __truediv__(self, numero):
         return self.__div__(numero)
 
@@ -46,6 +41,3 @@ class Vetor2(object):
 
     def intTupla(self):
         return int(self.x), int(self.y)
-
-    def __str__(self):
-        return "<"+str(self.x)+", "+str(self.y)+">"
