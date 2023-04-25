@@ -14,6 +14,7 @@ class Pacman(object):
         self.no = no
         self.definePosicao()
         self.alvo = no
+        self.raio_colisao = 5
 
     def definePosicao(self):
         self.posicao = self.no.posicao.copia()
@@ -83,3 +84,12 @@ class Pacman(object):
             if direcao == self.direcao * -1:
                 return True
         return False
+
+    def comePonto(self, lista_pontos):
+        for ponto in lista_pontos:
+            d = self.posicao - ponto.posicao
+            dQuadrado = d.distanciaQuadrado()
+            rQuadrado = (ponto.raio + self.raio_colisao) ** 2
+            if dQuadrado <= rQuadrado:
+                return ponto
+        return None

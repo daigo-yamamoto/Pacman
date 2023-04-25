@@ -26,6 +26,7 @@ class GameController(object):
         dt = self.tempo.tick(30) / 1000.0
         self.pacman.atualiza(dt)
         self.pontos.atualiza(dt)
+        self.checaEventoPontos()
         self.checaEvento()
         self.desenha()
 
@@ -40,6 +41,12 @@ class GameController(object):
         self.pontos.desenha(self.tela)
         self.pacman.desenha(self.tela)
         pygame.display.update()
+
+    def checaEventoPontos(self):
+        pellet = self.pacman.comePonto(self.pontos.lista_pontos)
+        if pellet:
+            self.pontos.num_pontos_comidos += 1
+            self.pontos.lista_pontos.remove(pellet)
 
 if __name__ == "__main__":
     jogo = GameController()
