@@ -48,4 +48,4 @@ class Pacman(object):
 
     def render(self, tela):
         p = self.posicao.intTupla()
-        pygame.draw.circle(tela, (255, 0, 0), p, self.raio)
+        pygame.draw.circle(tela, AMARELO, p, self.raio)
