@@ -19,7 +19,7 @@ class GameController(object):
         self.setTelaFundo()
         self.no = NodeGroup()
         self.no.setupTestNodes()
-        self.pacman = Pacman()
+        self.pacman = Pacman(self.no.listaNo[0])
 
     def atualiza(self):
         dt = self.tempo.tick(30) / 1000.0
@@ -34,9 +34,9 @@ class GameController(object):
 
     def render(self):
         self.tela.blit(self.tela_fundo, (0,0))
+        self.no.render(self.tela)
         self.pacman.render(self.tela)
         pygame.display.update()
-
 
 if __name__ == "__main__":
     jogo = GameController()
