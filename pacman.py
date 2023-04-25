@@ -31,5 +31,5 @@ class Pacman(object):
         return PARADO
 
     def render(self, tela):
-        p = self.posicao.eh_int()
+        p = self.posicao.intTupla()
         pygame.draw.circle(tela, (255, 0, 0), p, self.raio)

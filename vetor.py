@@ -32,7 +32,7 @@ class Vetor2(object):
                 return True
         return False
 
-    def distancia_quadrado(self):
+    def distanciaQuadrado(self):
         return self.x**2 + self.y**2
 
     def distancia(self):
@@ -41,10 +41,10 @@ class Vetor2(object):
     def copia(self):
         return Vetor2(self.x, self.y)
 
-    def eh_tupla(self):
+    def tupla(self):
         return self.x, self.y
 
-    def eh_int(self):
+    def intTupla(self):
         return int(self.x), int(self.y)
 
     def __str__(self):

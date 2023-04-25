@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 from constantes import *
 from pacman import Pacman
+from no import NodeGroup
 
 class GameController(object):
     def __init__(self):
@@ -16,6 +17,8 @@ class GameController(object):
 
     def comecaJogo(self):
         self.setTelaFundo()
+        self.no = NodeGroup()
+        self.no.setupTestNodes()
         self.pacman = Pacman()
 
     def atualiza(self):
