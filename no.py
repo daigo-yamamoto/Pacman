@@ -8,7 +8,7 @@ class No(object):
         self.posicao = Vetor2(x, y)
         self.vizinhos = {CIMA: None, BAIXO: None, ESQUERDA: None, DIREITA: None}
 
-    def render(self, tela):
+    def desenha(self, tela):
         for n in self.vizinhos.keys():
             if self.vizinhos[n] is not None:
                 line_start = self.posicao.tupla()
@@ -20,8 +20,8 @@ class GrupoNo(object):
     def __init__(self, nivel):
         self.nivel = nivel
         self.dicionarioNo = {}
-        self.simboloNo = ['+']
-        self.simboloCaminho = ['.']
+        self.simboloNo = ['+', 'P', 'n']
+        self.simboloCaminho = ['.', '-', '|', 'p']
         data = self.leituraMapa(nivel)
         self.criarTabelaNo(data)
         self.conectaHorizontal(data)
@@ -86,6 +86,6 @@ class GrupoNo(object):
         nos = list(self.dicionarioNo.values())
         return nos[0]
 
-    def render(self, tela):
+    def desenha(self, tela):
         for no in self.dicionarioNo.values():
-            no.render(tela)
+            no.desenha(tela)

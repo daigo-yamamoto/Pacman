@@ -23,3 +23,5 @@ VERMELHO = (255, 0, 0)
 
 # Jogadores
 PACMAN = 0
+PONTOS = 1
+PONTOSPODER = 2

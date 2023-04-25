@@ -59,7 +59,7 @@ class Pacman(object):
             return DIREITA
         return PARADO
 
-    def render(self, tela):
+    def desenha(self, tela):
         p = self.posicao.intTupla()
         pygame.draw.circle(tela, AMARELO, p, self.raio)
 

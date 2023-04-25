@@ -3,6 +3,7 @@ from pygame.locals import *
 from constantes import *
 from pacman import Pacman
 from no import GrupoNo
+from pontos import GrupoPontos
 
 class GameController(object):
     def __init__(self):
@@ -19,22 +20,25 @@ class GameController(object):
         self.setTelaFundo()
         self.no = GrupoNo("mapa.txt")
         self.pacman = Pacman(self.no.pegaNoInicial())
+        self.pontos = GrupoPontos("mapa.txt")
 
     def atualiza(self):
         dt = self.tempo.tick(30) / 1000.0
         self.pacman.atualiza(dt)
+        self.pontos.atualiza(dt)
         self.checaEvento()
-        self.render()
+        self.desenha()
 
     def checaEvento(self):
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 exit()
 
-    def render(self):
+    def desenha(self):
         self.tela.blit(self.tela_fundo, (0,0))
-        self.no.render(self.tela)
-        self.pacman.render(self.tela)
+        self.no.desenha(self.tela)
+        self.pontos.desenha(self.tela)
+        self.pacman.desenha(self.tela)
         pygame.display.update()
 
 if __name__ == "__main__":
