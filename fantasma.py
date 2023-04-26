@@ -21,6 +21,7 @@ class Fantasma(Andarilhos):
 
     def atualiza(self, dt):
         self.modo.atualiza(dt)
+        self.sprites.atualiza(dt)
         if self.modo.atual is INICIO:
             self.inicio()
         elif self.modo.atual is PERSEGUIR:

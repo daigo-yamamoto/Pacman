@@ -45,21 +45,21 @@ class PacmanSprites(Spritesheet):
     def update(self, dt):
         if self.andarilho.alive == True:
             if self.andarilho.direcao == ESQUERDA:
-                self.andarilho.imagem = self.getImage(*self.animacao[ESQUERDA].update(dt))
+                self.andarilho.imagem = self.getImage(*self.animacao[ESQUERDA].atualiza(dt))
                 self.imagemParada = (8, 0)
             elif self.andarilho.direcao == DIREITA:
-                self.andarilho.imagem = self.getImage(*self.animacao[DIREITA].update(dt))
+                self.andarilho.imagem = self.getImage(*self.animacao[DIREITA].atualiza(dt))
                 self.imagemParada = (10, 0)
             elif self.andarilho.direcao == BAIXO:
-                self.andarilho.imagem = self.getImage(*self.animacao[BAIXO].update(dt))
+                self.andarilho.imagem = self.getImage(*self.animacao[BAIXO].atualiza(dt))
                 self.imagemParada = (8, 2)
             elif self.andarilho.direcao == CIMA:
-                self.andarilho.imagem = self.getImage(*self.animacao[CIMA].update(dt))
+                self.andarilho.imagem = self.getImage(*self.animacao[CIMA].atualiza(dt))
                 self.imagemParada = (10, 2)
             elif self.andarilho.direcao == PARADO:
                 self.andarilho.imagem = self.getImage(*self.imagemParada)
         else:
-            self.andarilho.imagem = self.getImage(*self.animacao[DEATH].update(dt))
+            self.andarilho.imagem = self.getImage(*self.animacao[DEATH].atualiza(dt))
 
     def reset(self):
         for key in list(self.animacao.keys()):
@@ -79,9 +79,9 @@ class GhostSprites(Spritesheet):
         self.andarilho = entity
         self.andarilho.imagem = self.getStartImage()
 
-    def update(self, dt):
-        x = self.x[self.andarilho.name]
-        if self.andarilho.mode.current in [INICIO, PERSEGUIR]:
+    def atualiza(self, dt):
+        x = self.x[self.andarilho.nome]
+        if self.andarilho.modo.atual in [INICIO, PERSEGUIR]:
             if self.andarilho.direcao == ESQUERDA:
                 self.andarilho.imagem = self.getImage(x, 8)
             elif self.andarilho.direcao == DIREITA:
@@ -90,9 +90,9 @@ class GhostSprites(Spritesheet):
                 self.andarilho.imagem = self.getImage(x, 6)
             elif self.andarilho.direcao == CIMA:
                 self.andarilho.imagem = self.getImage(x, 4)
-        elif self.andarilho.mode.current == ALEATORIO:
+        elif self.andarilho.modo.atual == ALEATORIO:
             self.andarilho.imagem = self.getImage(10, 4)
-        elif self.andarilho.mode.current == SPAWN:
+        elif self.andarilho.modo.atual == SPAWN:
             if self.andarilho.direcao == ESQUERDA:
                 self.andarilho.imagem = self.getImage(8, 8)
             elif self.andarilho.direcao == DIREITA:
