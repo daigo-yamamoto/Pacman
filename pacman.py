@@ -2,13 +2,13 @@ import pygame
 from pygame.locals import *
 from vetor import Vetor2
 from constantes import *
-from andarilhos import Entity
+from andarilhos import Andarilho
 from sprites import PacmanSprites
 
 
-class Pacman(Entity):
+class Pacman(Andarilho):
     def __init__(self, node):
-        Entity.__init__(self, node)
+        Andarilho.__init__(self, node)
         self.nome = PACMAN
         self.cor = AMARELO
         self.direction = ESQUERDA
@@ -17,7 +17,7 @@ class Pacman(Entity):
         self.sprites = PacmanSprites(self)
 
     def reset(self):
-        Entity.reset(self)
+        Andarilho.reset(self)
         self.direction = ESQUERDA
         self.setBetweenNodes(ESQUERDA)
         self.alive = True

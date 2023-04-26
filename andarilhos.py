@@ -5,7 +5,7 @@ from constantes import *
 from random import randint
 
 
-class Entity(object):
+class Andarilho(object):
     def __init__(self, node):
         self.nome = None
         self.directions = {CIMA: Vetor2(0, -1), BAIXO: Vetor2(0, 1),

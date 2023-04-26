@@ -2,25 +2,25 @@ import pygame
 from pygame.locals import *
 from vetor import Vetor2
 from constantes import *
-from andarilhos import Entity
+from andarilhos import Andarilho
 from modos import ModeController
 from sprites import GhostSprites
 
-class Ghost(Entity):
-    def __init__(self, node, pacman=None, blinky=None):
-        Entity.__init__(self, node)
+class Fantasma(Andarilho):
+    def __init__(self, no, pacman=None, blinky=None):
+        Andarilho.__init__(self, no)
         self.nome = FANTASMA
-        self.points = 200
+        self.pontos = 200
         self.goal = Vetor2()
         self.directionMethod = self.goalDirection
         self.pacman = pacman
         self.mode = ModeController(self)
         self.blinky = blinky
-        self.homeNode = node
+        self.homeNode = no
 
     def reset(self):
-        Entity.reset(self)
-        self.points = 200
+        Andarilho.reset(self)
+        self.pontos = 200
         self.directionMethod = self.goalDirection
 
     def atualiza(self, dt):
@@ -30,7 +30,7 @@ class Ghost(Entity):
             self.inicio()
         elif self.mode.current is PERSEGUIR:
             self.perseguir()
-        Entity.atualiza(self, dt)
+        Andarilho.atualiza(self, dt)
 
     def inicio(self):
         self.goal = Vetor2()
@@ -65,17 +65,17 @@ class Ghost(Entity):
 
 
 
-class Blinky(Ghost):
-    def __init__(self, node, pacman=None, blinky=None):
-        Ghost.__init__(self, node, pacman, blinky)
+class Bafao(Fantasma):
+    def __init__(self, no, pacman=None, blinky=None):
+        Fantasma.__init__(self, no, pacman, blinky)
         self.nome = BAFAO
         self.cor = VERMELHO
         self.sprites = GhostSprites(self)
 
 
-class Pinky(Ghost):
-    def __init__(self, node, pacman=None, blinky=None):
-        Ghost.__init__(self, node, pacman, blinky)
+class Alonso(Fantasma):
+    def __init__(self, no, pacman=None, blinky=None):
+        Fantasma.__init__(self, no, pacman, blinky)
         self.nome = ALONSO
         self.cor = ROSA
         self.sprites = GhostSprites(self)
@@ -87,9 +87,9 @@ class Pinky(Ghost):
         self.goal = self.pacman.position + self.pacman.directions[self.pacman.direction] * LARGURANO * 4
 
 
-class Inky(Ghost):
-    def __init__(self, node, pacman=None, blinky=None):
-        Ghost.__init__(self, node, pacman, blinky)
+class Rogerio(Fantasma):
+    def __init__(self, no, pacman=None, blinky=None):
+        Fantasma.__init__(self, no, pacman, blinky)
         self.nome = ROGERIO
         self.cor = AZULCLARO
         self.sprites = GhostSprites(self)
@@ -103,9 +103,9 @@ class Inky(Ghost):
         self.goal = self.blinky.position + vec2
 
 
-class Clyde(Ghost):
-    def __init__(self, node, pacman=None, blinky=None):
-        Ghost.__init__(self, node, pacman, blinky)
+class Manga(Fantasma):
+    def __init__(self, no, pacman=None, blinky=None):
+        Fantasma.__init__(self, no, pacman, blinky)
         self.nome = MANGA
         self.cor = LARANJA
         self.sprites = GhostSprites(self)
@@ -124,10 +124,10 @@ class Clyde(Ghost):
 
 class GrupoFantasma(object):
     def __init__(self, node, pacman):
-        self.bafao = Blinky(node, pacman)
-        self.alonso = Pinky(node, pacman)
-        self.rogerio = Inky(node, pacman, self.bafao)
-        self.manga = Clyde(node, pacman)
+        self.bafao = Bafao(node, pacman)
+        self.alonso = Alonso(node, pacman)
+        self.rogerio = Rogerio(node, pacman, self.bafao)
+        self.manga = Manga(node, pacman)
         self.ghosts = [self.bafao, self.alonso, self.rogerio, self.manga]
 
     def __iter__(self):
@@ -148,11 +148,11 @@ class GrupoFantasma(object):
 
     def updatePoints(self):
         for ghost in self:
-            ghost.points *= 2
+            ghost.pontos *= 2
 
     def resetPoints(self):
         for ghost in self:
-            ghost.points = 200
+            ghost.pontos = 200
 
     def hide(self):
         for ghost in self:

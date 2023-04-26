@@ -115,7 +115,7 @@ class GameController(object):
         pontos = self.pacman.eatPellets(self.pontos.pelletList)
         if pontos:
             self.pontos.numEaten += 1
-            self.atualizaPontos(pontos.points)
+            self.atualizaPontos(pontos.pontos)
             if self.pontos.numEaten == 30:
                 self.fantasmas.rogerio.startNode.allowAccess(DIREITA, self.fantasmas.rogerio)
             if self.pontos.numEaten == 70:
@@ -133,7 +133,7 @@ class GameController(object):
                 if ghost.mode.current is ALEATORIO:
                     self.pacman.visible = False
                     ghost.visible = False
-                    self.atualizaPontos(ghost.points)
+                    self.atualizaPontos(ghost.pontos)
                     self.fantasmas.updatePoints()
                     self.pausa.setPause(pauseTime=1, func=self.mostraAndarilhos)
                     ghost.startSpawn()

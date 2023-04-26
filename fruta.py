@@ -1,11 +1,11 @@
 import pygame
-from andarilhos import Entity
+from andarilhos import Andarilho
 from constantes import *
 from sprites import FruitSprites
 
-class Fruit(Entity):
+class Fruit(Andarilho):
     def __init__(self, node):
-        Entity.__init__(self, node)
+        Andarilho.__init__(self, node)
         self.nome = FRUTA
         self.cor = VERDE
         self.lifespan = 5

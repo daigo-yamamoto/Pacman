@@ -11,7 +11,7 @@ class Pellet(object):
         self.cor = BRANCO
         self.radius = int(2 * LARGURANO / 16)
         self.collideRadius = 2 * LARGURANO / 16
-        self.points = 10
+        self.pontos = 10
         self.visible = True
 
     def desenha(self, screen):
