@@ -10,18 +10,18 @@ MORTO = 5
 
 class Spritesheet(object):
     def __init__(self):
-        self.sheet = pygame.image.load("spritesheetfinal.png").convert()
-        transcolor = self.sheet.get_at((0, 0))
-        self.sheet.set_colorkey(transcolor)
-        width = int(self.sheet.get_width() / BASETILEWIDTH * TILEWIDTH)
-        height = int(self.sheet.get_height() / BASETILEHEIGHT * TILEHEIGHT)
-        self.sheet = pygame.transform.scale(self.sheet, (width, height))
+        self.folha = pygame.image.load("spritesheetfinal.png").convert()
+        transcolor = self.folha.get_at((0, 0))
+        self.folha.set_colorkey(transcolor)
+        largura = int(self.folha.get_width() / BASETILEWIDTH * LARGURANO)
+        altura = int(self.folha.get_height() / BASETILEHEIGHT * ALTURANO)
+        self.folha = pygame.transform.scale(self.folha, (largura, altura))
 
     def getImage(self, x, y, width, height):
-        x *= TILEWIDTH
-        y *= TILEHEIGHT
-        self.sheet.set_clip(pygame.Rect(x, y, width, height))
-        return self.sheet.subsurface(self.sheet.get_clip())
+        x *= LARGURANO
+        y *= ALTURANO
+        self.folha.set_clip(pygame.Rect(x, y, width, height))
+        return self.folha.subsurface(self.folha.get_clip())
 
 
 class PacmanSprites(Spritesheet):
@@ -54,7 +54,7 @@ class PacmanSprites(Spritesheet):
             elif self.entity.direction == CIMA:
                 self.entity.image = self.getImage(*self.animations[CIMA].atualiza(dt))
                 self.stopimage = (8, 2)
-            elif self.entity.direction == STOP:
+            elif self.entity.direction == PARADO:
                 self.entity.image = self.getImage(*self.stopimage)
         else:
             self.entity.image = self.getImage(*self.animations[MORTO].atualiza(dt))
@@ -67,19 +67,19 @@ class PacmanSprites(Spritesheet):
         return self.getImage(8, 0)
 
     def getImage(self, x, y):
-        return Spritesheet.getImage(self, x, y, 2 * TILEWIDTH, 2 * TILEHEIGHT)
+        return Spritesheet.getImage(self, x, y, 2 * LARGURANO, 2 * ALTURANO)
 
 
 class GhostSprites(Spritesheet):
     def __init__(self, entity):
         Spritesheet.__init__(self)
-        self.x = {BLINKY: 0, PINKY: 2, INKY: 4, CLYDE: 6}
+        self.x = {BAFAO: 0, ALONSO: 2, ROGERIO: 4, MANGA: 6}
         self.entity = entity
         self.entity.image = self.getStartImage()
 
     def update(self, dt):
-        x = self.x[self.entity.name]
-        if self.entity.mode.current in [SCATTER, CHASE]:
+        x = self.x[self.entity.nome]
+        if self.entity.mode.current in [INICIO, PERSEGUIR]:
             if self.entity.direction == ESQUERDA:
                 self.entity.image = self.getImage(x, 8)
             elif self.entity.direction == DIREITA:
@@ -88,7 +88,7 @@ class GhostSprites(Spritesheet):
                 self.entity.image = self.getImage(x, 6)
             elif self.entity.direction == CIMA:
                 self.entity.image = self.getImage(x, 4)
-        elif self.entity.mode.current == FREIGHT:
+        elif self.entity.mode.current == ALEATORIO:
             self.entity.image = self.getImage(10, 4)
         elif self.entity.mode.current == SPAWN:
             if self.entity.direction == ESQUERDA:
@@ -101,10 +101,10 @@ class GhostSprites(Spritesheet):
                 self.entity.image = self.getImage(8, 4)
 
     def getStartImage(self):
-        return self.getImage(self.x[self.entity.name], 4)
+        return self.getImage(self.x[self.entity.nome], 4)
 
     def getImage(self, x, y):
-        return Spritesheet.getImage(self, x, y, 2 * TILEWIDTH, 2 * TILEHEIGHT)
+        return Spritesheet.getImage(self, x, y, 2 * LARGURANO, 2 * ALTURANO)
 
 
 class FruitSprites(Spritesheet):
@@ -118,7 +118,7 @@ class FruitSprites(Spritesheet):
         return self.getImage(*self.fruits[key])
 
     def getImage(self, x, y):
-        return Spritesheet.getImage(self, x, y, 2 * TILEWIDTH, 2 * TILEHEIGHT)
+        return Spritesheet.getImage(self, x, y, 2 * LARGURANO, 2 * ALTURANO)
 
 
 class LifeSprites(Spritesheet):
@@ -136,7 +136,7 @@ class LifeSprites(Spritesheet):
             self.images.append(self.getImage(0, 0))
 
     def getImage(self, x, y):
-        return Spritesheet.getImage(self, x, y, 2 * TILEWIDTH, 2 * TILEHEIGHT)
+        return Spritesheet.getImage(self, x, y, 2 * LARGURANO, 2 * ALTURANO)
 
 
 class MazeSprites(Spritesheet):
@@ -146,7 +146,7 @@ class MazeSprites(Spritesheet):
         self.rotdata = self.readMazeFile(rotfile)
 
     def getImage(self, x, y):
-        return Spritesheet.getImage(self, x, y, TILEWIDTH, TILEHEIGHT)
+        return Spritesheet.getImage(self, x, y, LARGURANO, ALTURANO)
 
     def readMazeFile(self, mazefile):
         return np.loadtxt(mazefile, dtype='<U1')
@@ -159,10 +159,10 @@ class MazeSprites(Spritesheet):
                     sprite = self.getImage(x, y)
                     rotval = int(self.rotdata[row][col])
                     sprite = self.rotate(sprite, rotval)
-                    background.blit(sprite, (col * TILEWIDTH, row * TILEHEIGHT))
+                    background.blit(sprite, (col * LARGURANO, row * ALTURANO))
                 elif self.data[row][col] == '=':
                     sprite = self.getImage(10, 8)
-                    background.blit(sprite, (col * TILEWIDTH, row * TILEHEIGHT))
+                    background.blit(sprite, (col * LARGURANO, row * ALTURANO))
 
         return background
 

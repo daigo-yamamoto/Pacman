@@ -8,18 +8,18 @@ class MainMode(object):
     def atualiza(self, dt):
         self.timer += dt
         if self.timer >= self.time:
-            if self.mode is SCATTER:
+            if self.mode is INICIO:
                 self.chase()
-            elif self.mode is CHASE:
+            elif self.mode is PERSEGUIR:
                 self.scatter()
 
     def scatter(self):
-        self.mode = SCATTER
+        self.mode = INICIO
         self.time = 7
         self.timer = 0
 
     def chase(self):
-        self.mode = CHASE
+        self.mode = PERSEGUIR
         self.time = 20
         self.timer = 0
 
@@ -34,28 +34,28 @@ class ModeController(object):
 
     def atualiza(self, dt):
         self.mainmode.atualiza(dt)
-        if self.current is FREIGHT:
+        if self.current is ALEATORIO:
             self.timer += dt
             if self.timer >= self.time:
                 self.time = None
-                self.entity.normalMode()
+                self.entity.modoNormal()
                 self.current = self.mainmode.mode
-        elif self.current in [SCATTER, CHASE]:
+        elif self.current in [INICIO, PERSEGUIR]:
             self.current = self.mainmode.mode
 
         if self.current is SPAWN:
             if self.entity.node == self.entity.spawnNode:
-                self.entity.normalMode()
+                self.entity.modoNormal()
                 self.current = self.mainmode.mode
 
     def setFreightMode(self):
-        if self.current in [SCATTER, CHASE]:
+        if self.current in [INICIO, PERSEGUIR]:
             self.timer = 0
             self.time = 7
-            self.current = FREIGHT
-        elif self.current is FREIGHT:
+            self.current = ALEATORIO
+        elif self.current is ALEATORIO:
             self.timer = 0
 
     def setSpawnMode(self):
-        if self.current is FREIGHT:
+        if self.current is ALEATORIO:
             self.current = SPAWN

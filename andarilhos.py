@@ -7,14 +7,14 @@ from random import randint
 
 class Entity(object):
     def __init__(self, node):
-        self.name = None
+        self.nome = None
         self.directions = {CIMA: Vetor2(0, -1), BAIXO: Vetor2(0, 1),
-                           ESQUERDA: Vetor2(-1, 0), DIREITA: Vetor2(1, 0), STOP: Vetor2()}
-        self.direction = STOP
+                           ESQUERDA: Vetor2(-1, 0), DIREITA: Vetor2(1, 0), PARADO: Vetor2()}
+        self.direction = PARADO
         self.setSpeed(100)
         self.radius = 10
         self.collideRadius = 5
-        self.color = WHITE
+        self.cor = BRANCO
         self.visible = True
         self.disablePortal = False
         self.goal = None
@@ -23,7 +23,7 @@ class Entity(object):
         self.image = None
 
     def setPosition(self):
-        self.position = self.node.position.copy()
+        self.position = self.node.position.copia()
 
     def atualiza(self, dt):
         self.position += self.directions[self.direction] * self.speed * dt
@@ -44,8 +44,8 @@ class Entity(object):
             self.setPosition()
 
     def validDirection(self, direction):
-        if direction is not STOP:
-            if self.name in self.node.access[direction]:
+        if direction is not PARADO:
+            if self.nome in self.node.access[direction]:
                 if self.node.neighbors[direction] is not None:
                     return True
         return False
@@ -59,8 +59,8 @@ class Entity(object):
         if self.target is not None:
             vec1 = self.target.position - self.node.position
             vec2 = self.position - self.node.position
-            node2Target = vec1.magnitudeSquared()
-            node2Self = vec2.magnitudeSquared()
+            node2Target = vec1.moduloQuadrado()
+            node2Self = vec2.moduloQuadrado()
             return node2Self >= node2Target
         return False
 
@@ -71,7 +71,7 @@ class Entity(object):
         self.target = temp
 
     def oppositeDirection(self, direction):
-        if direction is not STOP:
+        if direction is not PARADO:
             if direction == self.direction * -1:
                 return True
         return False
@@ -92,8 +92,8 @@ class Entity(object):
     def goalDirection(self, directions):
         distances = []
         for direction in directions:
-            vec = self.node.position + self.directions[direction] * TILEWIDTH - self.goal
-            distances.append(vec.magnitudeSquared())
+            vec = self.node.position + self.directions[direction] * LARGURANO - self.goal
+            distances.append(vec.moduloQuadrado())
         index = distances.index(min(distances))
         return directions[index]
 
@@ -110,19 +110,19 @@ class Entity(object):
 
     def reset(self):
         self.setStartNode(self.startNode)
-        self.direction = STOP
+        self.direction = PARADO
         self.speed = 100
         self.visible = True
 
     def setSpeed(self, speed):
-        self.speed = speed * TILEWIDTH / 16
+        self.speed = speed * LARGURANO / 16
 
     def render(self, screen):
         if self.visible:
             if self.image is not None:
-                adjust = Vetor2(TILEWIDTH, TILEHEIGHT) / 2
+                adjust = Vetor2(LARGURANO, ALTURANO) / 2
                 p = self.position - adjust
-                screen.blit(self.image, p.asTuple())
+                screen.blit(self.image, p.tupla())
             else:
-                p = self.position.asInt()
-                pygame.draw.circle(screen, self.color, p, self.radius)
+                p = self.position.intTupla()
+                pygame.draw.circle(screen, self.cor, p, self.radius)

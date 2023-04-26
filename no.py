@@ -7,26 +7,26 @@ class Node(object):
     def __init__(self, x, y):
         self.position = Vetor2(x, y)
         self.neighbors = {CIMA:None, BAIXO:None, ESQUERDA:None, DIREITA:None, PORTAL:None}
-        self.access = {CIMA:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT],
-                       BAIXO:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT],
-                       ESQUERDA:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT],
-                       DIREITA:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT]}
+        self.access = {CIMA:[PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
+                       BAIXO:[PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
+                       ESQUERDA:[PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
+                       DIREITA:[PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA]}
 
     def denyAccess(self, direction, entity):
-        if entity.name in self.access[direction]:
-            self.access[direction].remove(entity.name)
+        if entity.nome in self.access[direction]:
+            self.access[direction].remove(entity.nome)
 
     def allowAccess(self, direction, entity):
-        if entity.name not in self.access[direction]:
-            self.access[direction].append(entity.name)
+        if entity.nome not in self.access[direction]:
+            self.access[direction].append(entity.nome)
 
     def render(self, screen):
         for n in self.neighbors.keys():
             if self.neighbors[n] is not None:
-                line_start = self.position.asTuple()
-                line_end = self.neighbors[n].position.asTuple()
-                pygame.draw.line(screen, WHITE, line_start, line_end, 4)
-                pygame.draw.circle(screen, RED, self.position.asInt(), 12)
+                line_start = self.position.tupla()
+                line_end = self.neighbors[n].position.tupla()
+                pygame.draw.line(screen, BRANCO, line_start, line_end, 4)
+                pygame.draw.circle(screen, VERMELHO, self.position.intTupla(), 12)
 
 
 class GrupoNo(object):
@@ -52,7 +52,7 @@ class GrupoNo(object):
                     self.nodesLUT[(x, y)] = Node(x, y)
 
     def constructKey(self, x, y):
-        return x * TILEWIDTH, y * TILEHEIGHT
+        return x * LARGURANO, y * ALTURANO
 
 
     def connectHorizontally(self, data, xoffset=0, yoffset=0):

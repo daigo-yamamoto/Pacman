@@ -76,8 +76,8 @@ class GameController(object):
             self.fantasmas.atualiza(dt)
             if self.fruta is not None:
                 self.fruta.atualiza(dt)
-            self.checkPelletEvents()
-            self.checkGhostEvents()
+            self.checaEventoPontos()
+            self.checaEventoFantasma()
 
         if self.pacman.alive:
             if not self.pausa.paused:
@@ -109,33 +109,33 @@ class GameController(object):
                     if self.pacman.alive:
                         self.pausa.setPause(playerPaused=True)
                         if not self.pausa.paused:
-                            self.showEntities()
+                            self.mostraAndarilhos()
 
-    def checkPelletEvents(self):
-        pellet = self.pacman.eatPellets(self.pontos.pelletList)
-        if pellet:
+    def checaEventoPontos(self):
+        pontos = self.pacman.eatPellets(self.pontos.pelletList)
+        if pontos:
             self.pontos.numEaten += 1
-            self.updateScore(pellet.points)
+            self.atualizaPontos(pontos.points)
             if self.pontos.numEaten == 30:
                 self.fantasmas.rogerio.startNode.allowAccess(DIREITA, self.fantasmas.rogerio)
             if self.pontos.numEaten == 70:
                 self.fantasmas.manga.startNode.allowAccess(ESQUERDA, self.fantasmas.manga)
-            self.pontos.pelletList.remove(pellet)
-            if pellet.name == POWERPELLET:
+            self.pontos.pelletList.remove(pontos)
+            if pontos.nome == PONTOPODER:
                 self.fantasmas.startFreight()
             if self.pontos.isEmpty():
                 self.flashBG = True
-                self.hideEntities()
+                self.escondeAndarilhos()
 
-    def checkGhostEvents(self):
+    def checaEventoFantasma(self):
         for ghost in self.fantasmas:
             if self.pacman.collideGhost(ghost):
-                if ghost.mode.current is FREIGHT:
+                if ghost.mode.current is ALEATORIO:
                     self.pacman.visible = False
                     ghost.visible = False
-                    self.updateScore(ghost.points)
+                    self.atualizaPontos(ghost.points)
                     self.fantasmas.updatePoints()
-                    self.pausa.setPause(pauseTime=1, func=self.showEntities)
+                    self.pausa.setPause(pauseTime=1, func=self.mostraAndarilhos)
                     ghost.startSpawn()
                     self.no.allowHomeAccess(ghost)
                 elif ghost.mode.current is not SPAWN:
@@ -147,11 +147,11 @@ class GameController(object):
                         if self.vidas <= 0:
                             self.pausa.setPause(pauseTime=3, func=self.restartGame)
 
-    def showEntities(self):
+    def mostraAndarilhos(self):
         self.pacman.visible = True
         self.fantasmas.show()
 
-    def hideEntities(self):
+    def escondeAndarilhos(self):
         self.pacman.visible = False
         self.fantasmas.hide()
 
@@ -165,12 +165,11 @@ class GameController(object):
         self.lifesprites.resetLives(self.vidas)
         self.fruitCaptured = []
 
-    def updateScore(self, points):
+    def atualizaPontos(self, points):
         self.pontuacao += points
 
     def desenha(self):
         self.tela.blit(self.telaFundo, (0, 0))
-        # self.nodes.render(self.screen)
         self.pontos.desenha(self.tela)
         if self.fruta is not None:
             self.fruta.desenha(self.tela)
@@ -179,12 +178,12 @@ class GameController(object):
 
         for i in range(len(self.lifesprites.images)):
             x = self.lifesprites.images[i].get_width() * i
-            y = SCREENHEIGHT - self.lifesprites.images[i].get_height()
+            y = ALTURATELA - self.lifesprites.images[i].get_height()
             self.tela.blit(self.lifesprites.images[i], (x, y))
 
         for i in range(len(self.fruitCaptured)):
-            x = SCREENWIDTH - self.fruitCaptured[i].get_width() * (i + 1)
-            y = SCREENHEIGHT - self.fruitCaptured[i].get_height()
+            x = LARGURATELA - self.fruitCaptured[i].get_width() * (i + 1)
+            y = ALTURATELA - self.fruitCaptured[i].get_height()
             self.tela.blit(self.fruitCaptured[i], (x, y))
 
         pygame.display.update()

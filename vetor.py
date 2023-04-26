@@ -4,13 +4,13 @@ class Vetor2(object):
     def __init__(self, x=0, y=0):
         self.x = x
         self.y = y
-        self.thresh = 0.000001
+        self.erro = 0.000001
 
-    def __add__(self, other):
-        return Vetor2(self.x + other.x, self.y + other.y)
+    def __add__(self, outro_vetor):
+        return Vetor2(self.x + outro_vetor.x, self.y + outro_vetor.y)
 
-    def __sub__(self, other):
-        return Vetor2(self.x - other.x, self.y - other.y)
+    def __sub__(self, outro_vetor):
+        return Vetor2(self.x - outro_vetor.x, self.y - outro_vetor.y)
 
     def __neg__(self):
         return Vetor2(-self.x, -self.y)
@@ -18,34 +18,31 @@ class Vetor2(object):
     def __mul__(self, scalar):
         return Vetor2(self.x * scalar, self.y * scalar)
 
-    def __div__(self, scalar):
-        if scalar != 0:
-            return Vetor2(self.x / float(scalar), self.y / float(scalar))
+    def __div__(self, numero):
+        if numero != 0:
+            return Vetor2(self.x / float(numero), self.y / float(numero))
         return None
 
-    def __truediv__(self, scalar):
-        return self.__div__(scalar)
+    def __truediv__(self, numero):
+        return self.__div__(numero)
 
-    def __eq__(self, other):
-        if abs(self.x - other.x) < self.thresh:
-            if abs(self.y - other.y) < self.thresh:
+    def __eq__(self, numero):
+        if abs(self.x - numero.x) < self.erro:
+            if abs(self.y - numero.y) < self.erro:
                 return True
         return False
 
-    def magnitudeSquared(self):
+    def moduloQuadrado(self):
         return self.x**2 + self.y**2
 
-    def magnitude(self):
-        return math.sqrt(self.magnitudeSquared())
+    def modulo(self):
+        return math.sqrt(self.moduloQuadrado())
 
-    def copy(self):
+    def copia(self):
         return Vetor2(self.x, self.y)
 
-    def asTuple(self):
+    def tupla(self):
         return self.x, self.y
 
-    def asInt(self):
+    def intTupla(self):
         return int(self.x), int(self.y)
-
-    def __str__(self):
-        return "<"+str(self.x)+", "+str(self.y)+">"

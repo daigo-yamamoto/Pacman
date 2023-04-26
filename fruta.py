@@ -6,8 +6,8 @@ from sprites import FruitSprites
 class Fruit(Entity):
     def __init__(self, node):
         Entity.__init__(self, node)
-        self.name = FRUIT
-        self.color = GREEN
+        self.nome = FRUTA
+        self.cor = VERDE
         self.lifespan = 5
         self.timer = 0
         self.destroy = False
