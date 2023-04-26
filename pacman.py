@@ -24,14 +24,14 @@ class Pacman(Andarilho):
         self.image = self.sprites.getStartImage()
         self.sprites.reset()
 
-    def die(self):
+    def morre(self):
         self.vivo = False
         self.direcao = PARADO
 
     def atualiza(self, dt):
         self.sprites.update(dt)
         self.position += self.directions[self.direcao] * self.speed * dt
-        direction = self.getValidKey()
+        direction = self.pegaChaveValida()
         if self.overshotTarget():
             self.node = self.target
             if self.node.neighbors[PORTAL] is not None:
@@ -49,7 +49,7 @@ class Pacman(Andarilho):
             if self.oppositeDirection(direction):
                 self.reverseDirection()
 
-    def getValidKey(self):
+    def pegaChaveValida(self):
         key_pressed = pygame.key.get_pressed()
         if key_pressed[K_UP]:
             return CIMA
@@ -61,16 +61,16 @@ class Pacman(Andarilho):
             return DIREITA
         return PARADO
 
-    def eatPellets(self, pelletList):
+    def comePontos(self, pelletList):
         for pellet in pelletList:
-            if self.collideCheck(pellet):
+            if self.checaColisao(pellet):
                 return pellet
         return None
 
-    def collideGhost(self, ghost):
-        return self.collideCheck(ghost)
+    def colideFantasma(self, ghost):
+        return self.checaColisao(ghost)
 
-    def collideCheck(self, other):
+    def checaColisao(self, other):
         d = self.position - other.position
         dSquared = d.moduloQuadrado()
         rSquared = (self.collideRadius + other.collideRadius) ** 2

@@ -112,7 +112,7 @@ class GameController(object):
                             self.mostraAndarilhos()
 
     def checaEventoPontos(self):
-        pontos = self.pacman.eatPellets(self.pontos.pelletList)
+        pontos = self.pacman.comePontos(self.pontos.pelletList)
         if pontos:
             self.pontos.numEaten += 1
             self.atualizaPontos(pontos.pontos)
@@ -129,7 +129,7 @@ class GameController(object):
 
     def checaEventoFantasma(self):
         for ghost in self.fantasmas:
-            if self.pacman.collideGhost(ghost):
+            if self.pacman.colideFantasma(ghost):
                 if ghost.modo.atual is ALEATORIO:
                     self.pacman.visible = False
                     ghost.visible = False
@@ -142,7 +142,7 @@ class GameController(object):
                     if self.pacman.vivo:
                         self.vidas -= 1
                         self.lifesprites.removeImage()
-                        self.pacman.die()
+                        self.pacman.morre()
                         self.fantasmas.esconde()
                         if self.vidas <= 0:
                             self.pausa.setPause(pauseTime=3, func=self.restartGame)
