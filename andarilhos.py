@@ -89,6 +89,13 @@ class Andarilhos(object):
         indice = distancias.index(min(distancias))
         return direcoes[indice]
 
+    def validDirection(self, direcao):
+        if direcao is not PARADO:
+            if self.nome in self.no.access[direcao]:
+                if self.no.vizinhos[direcao] is not None:
+                    return True
+        return False
+
     def setBetweenNodes(self, direcao):
         if self.no.vizinhos[direcao] is not None:
             self.alvo = self.no.vizinhos[direcao]

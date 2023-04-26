@@ -28,7 +28,7 @@ class GameController(object):
     def resetLevel(self):
         self.pausa.paused = True
         self.pacman.reset()
-        self.fantasma.reset()
+        self.fantasmas.reset()
         self.fruta = None
 
     def setTelaFundo(self):
@@ -43,19 +43,31 @@ class GameController(object):
         self.no.conectaNoCasa(homekey, (15, 14), DIREITA)
         self.pacman = Pacman(self.no.pegaNoTiles(15, 26))
         self.pontos = GrupoPontos("mapa.txt")
-        self.fantasma = GrupoFantasma(self.no.pegaNoInicial(), self.pacman)
-        self.fantasma.bafao.setStartNode(self.no.pegaNoTiles(2 + 11.5, 0 + 14))
-        self.fantasma.alonso.setStartNode(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
-        self.fantasma.rogerio.setStartNode(self.no.pegaNoTiles(0 + 11.5, 3 + 14))
-        self.fantasma.manga.setStartNode(self.no.pegaNoTiles(4 + 11.5, 3 + 14))
-        self.fantasma.defineNoSpawn(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
+        self.fantasmas = GrupoFantasma(self.no.pegaNoInicial(), self.pacman)
+
+        self.fantasmas.bafao.setStartNode(self.no.pegaNoTiles(2 + 11.5, 0 + 14))
+        self.fantasmas.alonso.setStartNode(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
+        self.fantasmas.rogerio.setStartNode(self.no.pegaNoTiles(0 + 11.5, 3 + 14))
+        self.fantasmas.manga.setStartNode(self.no.pegaNoTiles(4 + 11.5, 3 + 14))
+        self.fantasmas.defineNoSpawn(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
+
+        self.no.denyHomeAccess(self.pacman)
+        self.no.denyHomeAccessList(self.fantasmas)
+        self.no.denyAccessList(2 + 11.5, 3 + 14, ESQUERDA, self.fantasmas)
+        self.no.denyAccessList(2 + 11.5, 3 + 14, DIREITA, self.fantasmas)
+        self.fantasmas.alonso.no_inicial.denyAccess(DIREITA, self.fantasmas.alonso)
+        self.fantasmas.manga.no_inicial.denyAccess(ESQUERDA, self.fantasmas.manga)
+        self.no.denyAccessList(12, 14, CIMA, self.fantasmas)
+        self.no.denyAccessList(15, 14, CIMA, self.fantasmas)
+        self.no.denyAccessList(12, 26, CIMA, self.fantasmas)
+        self.no.denyAccessList(15, 26, CIMA, self.fantasmas)
 
     def atualiza(self):
         dt = self.tempo.tick(30) / 1000.0
         self.pontos.atualiza(dt)
         if not self.pausa.pausado:
             self.pacman.atualiza(dt)
-            self.fantasma.atualiza(dt)
+            self.fantasmas.atualiza(dt)
             if self.fruta is not None:
                 self.fruta.atualiza(dt)
             self.checaEventoPontos()
@@ -91,18 +103,19 @@ class GameController(object):
                             self.hideEntities()
 
     def checaEventoFantasma(self):
-        for fantasma in self.fantasma:
+        for fantasma in self.fantasmas:
             if self.pacman.collideGhost(fantasma):
                 if fantasma.modo.atual is ALEATORIO:
                     self.pacman.visible = False
                     fantasma.visible = False
                     self.pausa.setPause(tempoPausa=1, func=self.showEntities)
                     fantasma.comecaSpawn()
+                    self.no.allowHomeAccess(fantasma)
                 elif fantasma.modo.atual is not SPAWN:
                     if self.pacman.vivo:
                         self.vidas -= 1
                         self.pacman.morre()
-                        self.fantasma.esconde()
+                        self.fantasmas.esconde()
                         if self.vidas <= 0:
                             self.pausa.setPause(tempoPausa=3, func=self.restartGame)
                         else:
@@ -110,11 +123,11 @@ class GameController(object):
 
     def showEntities(self):
         self.pacman.visible = True
-        self.fantasma.mostra()
+        self.fantasmas.mostra()
 
     def hideEntities(self):
         self.pacman.visible = False
-        self.fantasma.esconde()
+        self.fantasmas.esconde()
 
     def desenha(self):
         self.tela.blit(self.tela_fundo, (0,0))
@@ -123,16 +136,21 @@ class GameController(object):
         if self.fruta is not None:
             self.fruta.desenha(self.tela)
         self.pacman.desenha(self.tela)
-        self.fantasma.desenha(self.tela)
+        self.fantasmas.desenha(self.tela)
         pygame.display.update()
 
     def checaEventoPontos(self):
         ponto = self.pacman.comePonto(self.pontos.lista_pontos)
         if ponto:
             self.pontos.num_pontos_comidos += 1
+            if self.pontos.num_pontos_comidos == 30:
+                self.fantasmas.alonso.no_inicial.allowAccess(DIREITA, self.fantasmas.alonso)
+            if self.pontos.num_pontos_comidos == 70:
+                self.fantasmas.manga.no_inicial.allowAccess(ESQUERDA, self.fantasmas.manga)
             self.pontos.lista_pontos.remove(ponto)
             if ponto.nome == PONTOSPODER:
-                self.fantasma.comecaAleatorio()
+                self.fantasmas.comecaAleatorio()
+
 
 if __name__ == "__main__":
     jogo = GameController()

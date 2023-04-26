@@ -41,6 +41,7 @@ class Fantasma(Andarilhos):
     def normalMode(self):
         self.defineVelocidade(100)
         self.metodoDirecionamento = self.direcaoChegada
+        self.noCasa.denyAccess(BAIXO, self)
 
     def spawn(self):
         self.chegada = self.spawnNode.position

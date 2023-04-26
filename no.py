@@ -7,6 +7,18 @@ class No(object):
     def __init__(self, x, y):
         self.posicao = Vetor2(x, y)
         self.vizinhos = {CIMA: None, BAIXO: None, ESQUERDA: None, DIREITA: None}
+        self.access = {CIMA: [PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
+                       BAIXO: [PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
+                       ESQUERDA: [PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
+                       DIREITA: [PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA]}
+
+    def denyAccess(self, direcao, andarilho):
+        if andarilho.nome in self.access[direcao]:
+            self.access[direcao].remove(andarilho.nome)
+
+    def allowAccess(self, direcao, andarilho):
+        if andarilho.nome not in self.access[direcao]:
+            self.access[direcao].append(andarilho.nome)
 
     def desenha(self, tela):
         for n in self.vizinhos.keys():
@@ -108,3 +120,35 @@ class GrupoNo(object):
     def desenha(self, tela):
         for no in self.dicionarioNo.values():
             no.desenha(tela)
+
+    def denyAccess(self, coluna, linha, direcao, andarilho):
+        no = self.pegaNoTiles(coluna, linha)
+        if no is not None:
+            no.denyAccess(direcao, andarilho)
+
+    def allowAccess(self, coluna, linha, direcao, andarilho):
+        no = self.pegaNoTiles(coluna, linha)
+        if no is not None:
+            no.allowAccess(direcao, andarilho)
+
+    def denyAccessList(self, coluna, linha, direcao, andarilhos):
+        for andarilho in andarilhos:
+            self.denyAccess(coluna, linha, direcao, andarilho)
+
+    def allowAccessList(self, coluna, linha, direcao, andarilhos):
+        for andarilho in andarilhos:
+            self.allowAccess(coluna, linha, direcao, andarilho)
+
+    def denyHomeAccess(self, andarilho):
+        self.dicionarioNo[self.homekey].denyAccess(BAIXO, andarilho)
+
+    def allowHomeAccess(self, andarilho):
+        self.dicionarioNo[self.homekey].allowAccess(BAIXO, andarilho)
+
+    def denyHomeAccessList(self, andarilhos):
+        for andarilho in andarilhos:
+            self.denyHomeAccess(andarilho)
+
+    def allowHomeAccessList(self, andarilhos):
+        for andarilho in andarilhos:
+            self.allowHomeAccess(andarilho)
