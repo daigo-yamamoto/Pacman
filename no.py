@@ -26,6 +26,7 @@ class GrupoNo(object):
         self.criarTabelaNo(data)
         self.conectaHorizontal(data)
         self.conectaVertical(data)
+        self.homekey = None
 
     def leituraMapa(self, arquivo_texto):
         return np.loadtxt(arquivo_texto, dtype='<U1')
@@ -70,6 +71,24 @@ class GrupoNo(object):
                         chave = otherkey
                 elif dadosT[coluna][linha] not in self.simboloCaminho:
                     chave = None
+
+    def createHomeNodes(self, xoffset, yoffset):
+        homedata = np.array([['X', 'X', '+', 'X', 'X'],
+                             ['X', 'X', '.', 'X', 'X'],
+                             ['+', 'X', '.', 'X', '+'],
+                             ['+', '.', '+', '.', '+'],
+                             ['+', 'X', 'X', 'X', '+']])
+
+        self.criarTabelaNo(homedata, xoffset, yoffset)
+        self.conectaHorizontal(homedata, xoffset, yoffset)
+        self.conectaVertical(homedata, xoffset, yoffset)
+        self.homekey = self.constroiMapa(xoffset + 2, yoffset)
+        return self.homekey
+
+    def conectaNoCasa(self, homekey, otherkey, direction):
+        key = self.constroiMapa(*otherkey)
+        self.dicionarioNo[homekey].vizinhos[direction] = self.dicionarioNo[key]
+        self.dicionarioNo[key].vizinhos[direction * -1] = self.dicionarioNo[homekey]
 
     def pegaNoPixel(self, xpixel, ypixel):
         if (xpixel, ypixel) in self.dicionarioNo.keys():

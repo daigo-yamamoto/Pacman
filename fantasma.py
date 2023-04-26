@@ -28,4 +28,4 @@ class Fantasma(Andarilhos):
         self.chegada = Vetor2()
 
     def perseguir(self):
-        self.chegada = self.pacman.position
+        self.chegada = self.pacman.posicao

@@ -20,6 +20,9 @@ class GameController(object):
     def comecaJogo(self):
         self.setTelaFundo()
         self.no = GrupoNo("mapa.txt")
+        homekey = self.no.createHomeNodes(11.5, 14)
+        self.no.conectaNoCasa(homekey, (12, 14), ESQUERDA)
+        self.no.conectaNoCasa(homekey, (15, 14), DIREITA)
         self.pacman = Pacman(self.no.pegaNoInicial())
         self.pontos = GrupoPontos("mapa.txt")
         self.fantasma = Fantasma(self.no.pegaNoInicial(), self.pacman)
