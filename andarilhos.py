@@ -18,6 +18,8 @@ class Andarilhos(object):
         self.definePosicao()
         self.alvo = no
         self.visivel = True
+        self.chegada = None
+        self.metodoDirecionamento = self.direcaoAleatoria
 
     def definePosicao(self):
         self.posicao = self.no.posicao.copia()
@@ -75,15 +77,23 @@ class Andarilhos(object):
     def direcaoAleatoria(self, direcoes):
         return direcoes[randint(0, len(direcoes) - 1)]
 
+    def direcaoChegada(self, direcoes):
+        distancias = []
+        for direcao in direcoes:
+            vec = self.no.posicao + self.direcoes[direcao] * LARGURA_NO - self.chegada
+            distancias.append(vec.distanciaQuadrado())
+        indice = distancias.index(min(distancias))
+        return direcoes[indice]
+
     def atualiza(self, dt):
         self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
 
         if self.ultrapassouAlvo():
-            self.node = self.alvo
+            self.no = self.alvo
             direcoes = self.direcoesValidas()
-            direcao = self.direcaoAleatoria(direcoes)
-            self.target = self.pegaNovoAlvo(direcao)
-            if self.target is not self.node:
+            direcao = self.metodoDirecionamento(direcoes)
+            self.alvo = self.pegaNovoAlvo(direcao)
+            if self.alvo is not self.no:
                 self.direcao = direcao
             else:
                 self.alvo = self.pegaNovoAlvo(self.direcao)
