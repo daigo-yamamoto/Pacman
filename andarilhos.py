@@ -75,7 +75,7 @@ class Andarilhos(object):
     def direcaoAleatoria(self, direcoes):
         return direcoes[randint(0, len(direcoes) - 1)]
 
-    def update(self, dt):
+    def atualiza(self, dt):
         self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
 
         if self.ultrapassouAlvo():

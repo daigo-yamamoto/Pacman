@@ -4,6 +4,7 @@ from constantes import *
 from pacman import Pacman
 from no import GrupoNo
 from pontos import GrupoPontos
+from fantasma import Fantasma
 
 class GameController(object):
     def __init__(self):
@@ -21,10 +22,12 @@ class GameController(object):
         self.no = GrupoNo("mapa.txt")
         self.pacman = Pacman(self.no.pegaNoInicial())
         self.pontos = GrupoPontos("mapa.txt")
+        self.fantasma = Fantasma(self.no.pegaNoInicial())
 
     def atualiza(self):
         dt = self.tempo.tick(30) / 1000.0
         self.pacman.atualiza(dt)
+        self.fantasma.atualiza(dt)
         self.pontos.atualiza(dt)
         self.checaEventoPontos()
         self.checaEvento()
@@ -40,6 +43,7 @@ class GameController(object):
         self.no.desenha(self.tela)
         self.pontos.desenha(self.tela)
         self.pacman.desenha(self.tela)
+        self.fantasma.desenha(self.tela)
         pygame.display.update()
 
     def checaEventoPontos(self):
