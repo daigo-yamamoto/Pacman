@@ -67,7 +67,9 @@ class Andarilhos(object):
     def desenha(self, tela):
         if self.visivel:
             if self.image is not None:
-                tela.blit(self.image, self.posicao.tupla())
+                ajuste = Vetor2(LARGURA_NO, ALTURA_NO) / 2
+                p = self.posicao - ajuste
+                tela.blit(self.image, p.tupla())
             else:
                 p = self.posicao.intTupla()
                 pygame.draw.circle(tela, self.cor, p, self.raio)
