@@ -55,6 +55,12 @@ class Fantasma(Andarilhos):
             self.metodoDirecionamento = self.direcaoChegada
             self.spawn()
 
+    def reset(self):
+        Andarilhos.reset(self)
+        self.pontos = 200
+        self.metodoDirecionamento = self.direcaoChegada
+
+
 class GrupoFantasma(object):
     def __init__(self, no, pacman):
         self.bafao = Bafao(no, pacman)

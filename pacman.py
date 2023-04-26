@@ -11,6 +11,7 @@ class Pacman(Andarilhos):
         self.cor = AMARELO
         self.direcao = ESQUERDA
         self.setBetweenNodes(ESQUERDA)
+        self.vivo = True
 
     def atualiza(self, dt):
         self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
@@ -58,3 +59,13 @@ class Pacman(Andarilhos):
         if dSquared <= rSquared:
             return True
         return False
+
+    def reset(self):
+        Andarilhos.reset(self)
+        self.direcao = ESQUERDA
+        self.setBetweenNodes(ESQUERDA)
+        self.vivo = True
+
+    def morre(self):
+        self.vivo = False
+        self.direcao = PARADO

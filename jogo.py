@@ -17,6 +17,19 @@ class GameController(object):
         self.tempo = pygame.time.Clock()
         self.fruta = None
         self.pausa = Pausa(True)
+        self.vidas = 5
+
+    def restartGame(self):
+        self.vidas = 5
+        self.pausa.pausado = True
+        self.fruta = None
+        self.comecaJogo()
+
+    def resetLevel(self):
+        self.pausa.paused = True
+        self.pacman.reset()
+        self.fantasma.reset()
+        self.fruta = None
 
     def setTelaFundo(self):
         self.tela_fundo = pygame.surface.Surface(TAMANHO_TELA).convert()
@@ -70,11 +83,12 @@ class GameController(object):
                 exit()
             elif evento.type == KEYDOWN:
                 if evento.key == K_SPACE:
-                    self.pausa.setPause(playerPaused=True)
-                    if not self.pausa.pausado:
-                        self.showEntities()
-                    else:
-                        self.hideEntities()
+                    if self.pacman.vivo:
+                        self.pausa.setPause(playerPaused=True)
+                        if not self.pausa.pausado:
+                            self.showEntities()
+                        else:
+                            self.hideEntities()
 
     def checaEventoFantasma(self):
         for fantasma in self.fantasma:
@@ -84,6 +98,15 @@ class GameController(object):
                     fantasma.visible = False
                     self.pausa.setPause(tempoPausa=1, func=self.showEntities)
                     fantasma.comecaSpawn()
+                elif fantasma.modo.atual is not SPAWN:
+                    if self.pacman.vivo:
+                        self.vidas -= 1
+                        self.pacman.morre()
+                        self.fantasma.esconde()
+                        if self.vidas <= 0:
+                            self.pausa.setPause(tempoPausa=3, func=self.restartGame)
+                        else:
+                            self.pausa.setPause(tempoPausa=3, func=self.resetLevel)
 
     def showEntities(self):
         self.pacman.visible = True
