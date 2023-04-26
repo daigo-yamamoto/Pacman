@@ -89,6 +89,11 @@ class Andarilhos(object):
         indice = distancias.index(min(distancias))
         return direcoes[indice]
 
+    def setBetweenNodes(self, direcao):
+        if self.no.vizinhos[direcao] is not None:
+            self.alvo = self.no.vizinhos[direcao]
+            self.posicao = (self.no.posicao + self.alvo.posicao) / 2.0
+
     def atualiza(self, dt):
         self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
 

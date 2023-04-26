@@ -5,6 +5,8 @@ from pacman import Pacman
 from no import GrupoNo
 from pontos import GrupoPontos
 from fantasma import GrupoFantasma
+from fruta import Fruta
+
 
 class GameController(object):
     def __init__(self):
@@ -12,6 +14,7 @@ class GameController(object):
         self.tela = pygame.display.set_mode(TAMANHO_TELA, 0, 32)
         self.tela_fundo = None
         self.tempo = pygame.time.Clock()
+        self.fruta = None
 
     def setTelaFundo(self):
         self.tela_fundo = pygame.surface.Surface(TAMANHO_TELA).convert()
@@ -23,7 +26,7 @@ class GameController(object):
         homekey = self.no.createHomeNodes(11.5, 14)
         self.no.conectaNoCasa(homekey, (12, 14), ESQUERDA)
         self.no.conectaNoCasa(homekey, (15, 14), DIREITA)
-        self.pacman = Pacman(self.no.pegaNoTiles(15,26))
+        self.pacman = Pacman(self.no.pegaNoTiles(15, 26))
         self.pontos = GrupoPontos("mapa.txt")
         self.fantasma = GrupoFantasma(self.no.pegaNoInicial(), self.pacman)
         self.fantasma.bafao.setStartNode(self.no.pegaNoTiles(2 + 11.5, 0 + 14))
@@ -37,10 +40,23 @@ class GameController(object):
         self.pacman.atualiza(dt)
         self.fantasma.atualiza(dt)
         self.pontos.atualiza(dt)
+        if self.fruta is not None:
+            self.fruta.update(dt)
         self.checaEventoPontos()
         self.checaEventoFantasma()
+        self.checkFruitEvents()
         self.checaEvento()
         self.desenha()
+
+    def checkFruitEvents(self):
+        if self.pontos.num_pontos_comidos == 50 or self.pontos.num_pontos_comidos == 140:
+            if self.fruta is None:
+                self.fruta = Fruta(self.no.pegaNoTiles(9, 20))
+        if self.fruta is not None:
+            if self.pacman.checaColisao(self.fruta):
+                self.fruta = None
+            elif self.fruta.destruido:
+                self.fruta = None
 
     def checaEvento(self):
         for evento in pygame.event.get():
@@ -57,6 +73,8 @@ class GameController(object):
         self.tela.blit(self.tela_fundo, (0,0))
         self.no.desenha(self.tela)
         self.pontos.desenha(self.tela)
+        if self.fruta is not None:
+            self.fruta.desenha(self.tela)
         self.pacman.desenha(self.tela)
         self.fantasma.desenha(self.tela)
         pygame.display.update()

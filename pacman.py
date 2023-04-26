@@ -10,6 +10,7 @@ class Pacman(Andarilhos):
         self.nome = PACMAN
         self.cor = AMARELO
         self.direcao = ESQUERDA
+        self.setBetweenNodes(ESQUERDA)
 
     def atualiza(self, dt):
         self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
