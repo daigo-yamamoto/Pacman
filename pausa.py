@@ -1,25 +1,25 @@
-class Pausa(object):
-    def __init__(self, pausado=False):
-        self.pausado = pausado
+class Pause(object):
+    def __init__(self, paused=False):
+        self.paused = paused
         self.timer = 0
-        self.tempoPausa = None
+        self.pauseTime = None
         self.func = None
 
     def atualiza(self, dt):
-        if self.tempoPausa is not None:
+        if self.pauseTime is not None:
             self.timer += dt
-            if self.timer >= self.tempoPausa:
+            if self.timer >= self.pauseTime:
                 self.timer = 0
-                self.pausado = False
-                self.tempoPausa = None
+                self.paused = False
+                self.pauseTime = None
                 return self.func
         return None
 
-    def setPause(self, playerPaused=False, tempoPausa=None, func=None):
+    def setPause(self, playerPaused=False, pauseTime=None, func=None):
         self.timer = 0
         self.func = func
-        self.tempoPausa = tempoPausa
+        self.pauseTime = pauseTime
         self.flip()
 
     def flip(self):
-        self.pausado = not self.pausado
+        self.paused = not self.paused

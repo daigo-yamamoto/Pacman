@@ -4,126 +4,125 @@ from vetor import Vetor2
 from constantes import *
 from random import randint
 
-class Andarilhos(object):
-    def __init__(self, no):
-        self.nome = None
-        self.direcoes = {CIMA: Vetor2(0, -1), BAIXO: Vetor2(0, 1),
-                         ESQUERDA: Vetor2(-1, 0), DIREITA: Vetor2(1, 0), PARADO: Vetor2()}
-        self.direcao = PARADO
-        self.defineVelocidade(100)
-        self.raio = 10
-        self.raio_colisao = 5
-        self.cor = BRANCO
-        self.visivel = True
-        self.chegada = None
-        self.metodoDirecionamento = self.direcaoAleatoria
-        self.setStartNode(no)
-        self.imagens = None
 
-    def setStartNode(self, no):
-        self.no = no
-        self.no_inicial = no
-        self.alvo = no
-        self.definePosicao()
+class Entity(object):
+    def __init__(self, node):
+        self.name = None
+        self.directions = {CIMA: Vetor2(0, -1), BAIXO: Vetor2(0, 1),
+                           ESQUERDA: Vetor2(-1, 0), DIREITA: Vetor2(1, 0), STOP: Vetor2()}
+        self.direction = STOP
+        self.setSpeed(100)
+        self.radius = 10
+        self.collideRadius = 5
+        self.color = WHITE
+        self.visible = True
+        self.disablePortal = False
+        self.goal = None
+        self.directionMethod = self.randomDirection
+        self.setStartNode(node)
+        self.image = None
 
-    def definePosicao(self):
-        self.posicao = self.no.posicao.copia()
+    def setPosition(self):
+        self.position = self.node.position.copy()
 
-    def direcaoValida(self, direcao):
-        if direcao is not PARADO:
-            if self.no.vizinhos[direcao] is not None:
-                return True
-        return False
+    def atualiza(self, dt):
+        self.position += self.directions[self.direction] * self.speed * dt
 
-    def pegaNovoAlvo(self, direcao):
-        if self.direcaoValida(direcao):
-            return self.no.vizinhos[direcao]
-        return self.no
-
-    def ultrapassouAlvo(self):
-        if self.alvo is not None:
-            vec1 = self.alvo.posicao - self.no.posicao
-            vec2 = self.posicao - self.no.posicao
-            no2alvo = vec1.distanciaQuadrado()
-            no2self = vec2.distanciaQuadrado()
-            return no2self >= no2alvo
-        return False
-
-    def direcaoReversa(self):
-        self.direcao *= -1
-        temp = self.no
-        self.no = self.alvo
-        self.alvo = temp
-
-    def direcaoOposta(self, direcao):
-        if direcao is not PARADO:
-            if direcao == self.direcao * -1:
-                return True
-        return False
-
-    def defineVelocidade(self, velocidade):
-        self.velocidade = velocidade * LARGURA_NO / 16
-
-    def desenha(self, tela):
-        if self.visivel:
-            if self.imagens is not None:
-                ajuste = Vetor2(LARGURA_NO, ALTURA_NO) / 2
-                p = self.posicao - ajuste
-                tela.blit(self.imagens, p.tupla())
+        if self.overshotTarget():
+            self.node = self.target
+            directions = self.validDirections()
+            direction = self.directionMethod(directions)
+            if not self.disablePortal:
+                if self.node.neighbors[PORTAL] is not None:
+                    self.node = self.node.neighbors[PORTAL]
+            self.target = self.getNewTarget(direction)
+            if self.target is not self.node:
+                self.direction = direction
             else:
-                p = self.posicao.intTupla()
-                pygame.draw.circle(tela, self.cor, p, self.raio)
+                self.target = self.getNewTarget(self.direction)
 
-    def direcoesValidas(self):
-        direcoes = []
-        for chave in [CIMA, BAIXO, ESQUERDA, DIREITA]:
-            if self.direcaoValida(chave):
-                if chave != self.direcao * -1:
-                    direcoes.append(chave)
-        if len(direcoes) == 0:
-            direcoes.append(self.direcao * -1)
-        return direcoes
+            self.setPosition()
 
-    def direcaoAleatoria(self, direcoes):
-        return direcoes[randint(0, len(direcoes) - 1)]
-
-    def direcaoChegada(self, direcoes):
-        distancias = []
-        for direcao in direcoes:
-            vec = self.no.posicao + self.direcoes[direcao] * LARGURA_NO - self.chegada
-            distancias.append(vec.distanciaQuadrado())
-        indice = distancias.index(min(distancias))
-        return direcoes[indice]
-
-    def validDirection(self, direcao):
-        if direcao is not PARADO:
-            if self.nome in self.no.access[direcao]:
-                if self.no.vizinhos[direcao] is not None:
+    def validDirection(self, direction):
+        if direction is not STOP:
+            if self.name in self.node.access[direction]:
+                if self.node.neighbors[direction] is not None:
                     return True
         return False
 
-    def setBetweenNodes(self, direcao):
-        if self.no.vizinhos[direcao] is not None:
-            self.alvo = self.no.vizinhos[direcao]
-            self.posicao = (self.no.posicao + self.alvo.posicao) / 2.0
+    def getNewTarget(self, direction):
+        if self.validDirection(direction):
+            return self.node.neighbors[direction]
+        return self.node
 
-    def atualiza(self, dt):
-        self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
+    def overshotTarget(self):
+        if self.target is not None:
+            vec1 = self.target.position - self.node.position
+            vec2 = self.position - self.node.position
+            node2Target = vec1.magnitudeSquared()
+            node2Self = vec2.magnitudeSquared()
+            return node2Self >= node2Target
+        return False
 
-        if self.ultrapassouAlvo():
-            self.no = self.alvo
-            direcoes = self.direcoesValidas()
-            direcao = self.metodoDirecionamento(direcoes)
-            self.alvo = self.pegaNovoAlvo(direcao)
-            if self.alvo is not self.no:
-                self.direcao = direcao
-            else:
-                self.alvo = self.pegaNovoAlvo(self.direcao)
+    def reverseDirection(self):
+        self.direction *= -1
+        temp = self.node
+        self.node = self.target
+        self.target = temp
 
-            self.definePosicao()
+    def oppositeDirection(self, direction):
+        if direction is not STOP:
+            if direction == self.direction * -1:
+                return True
+        return False
+
+    def validDirections(self):
+        directions = []
+        for key in [CIMA, BAIXO, ESQUERDA, DIREITA]:
+            if self.validDirection(key):
+                if key != self.direction * -1:
+                    directions.append(key)
+        if len(directions) == 0:
+            directions.append(self.direction * -1)
+        return directions
+
+    def randomDirection(self, directions):
+        return directions[randint(0, len(directions) - 1)]
+
+    def goalDirection(self, directions):
+        distances = []
+        for direction in directions:
+            vec = self.node.position + self.directions[direction] * TILEWIDTH - self.goal
+            distances.append(vec.magnitudeSquared())
+        index = distances.index(min(distances))
+        return directions[index]
+
+    def setStartNode(self, node):
+        self.node = node
+        self.startNode = node
+        self.target = node
+        self.setPosition()
+
+    def setBetweenNodes(self, direction):
+        if self.node.neighbors[direction] is not None:
+            self.target = self.node.neighbors[direction]
+            self.position = (self.node.position + self.target.position) / 2.0
 
     def reset(self):
-        self.setStartNode(self.no_inicial)
-        self.direction = PARADO
+        self.setStartNode(self.startNode)
+        self.direction = STOP
         self.speed = 100
-        self.visivel = True
+        self.visible = True
+
+    def setSpeed(self, speed):
+        self.speed = speed * TILEWIDTH / 16
+
+    def render(self, screen):
+        if self.visible:
+            if self.image is not None:
+                adjust = Vetor2(TILEWIDTH, TILEHEIGHT) / 2
+                p = self.position - adjust
+                screen.blit(self.image, p.asTuple())
+            else:
+                p = self.position.asInt()
+                pygame.draw.circle(screen, self.color, p, self.radius)

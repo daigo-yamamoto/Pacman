@@ -1,21 +1,21 @@
 import pygame
-from andarilhos import Andarilhos
+from andarilhos import Entity
 from constantes import *
 from sprites import FruitSprites
 
-class Fruta(Andarilhos):
-    def __init__(self, no):
-        Andarilhos.__init__(self, no)
-        self.nome = FRUTA
-        self.cor = VERDE
+class Fruit(Entity):
+    def __init__(self, node):
+        Entity.__init__(self, node)
+        self.name = FRUIT
+        self.color = GREEN
         self.lifespan = 5
         self.timer = 0
-        self.destruido = False
-        self.pontos = 100
+        self.destroy = False
+        self.points = 100
         self.setBetweenNodes(DIREITA)
         self.sprites = FruitSprites(self)
 
-    def update(self, dt):
+    def atualiza(self, dt):
         self.timer += dt
         if self.timer >= self.lifespan:
-            self.destruido = True
+            self.destroy = True

@@ -1,154 +1,164 @@
 import pygame
-import numpy as np
 from vetor import Vetor2
 from constantes import *
+import numpy as np
 
-class No(object):
+class Node(object):
     def __init__(self, x, y):
-        self.posicao = Vetor2(x, y)
-        self.vizinhos = {CIMA: None, BAIXO: None, ESQUERDA: None, DIREITA: None}
-        self.access = {CIMA: [PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
-                       BAIXO: [PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
-                       ESQUERDA: [PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
-                       DIREITA: [PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA]}
+        self.position = Vetor2(x, y)
+        self.neighbors = {CIMA:None, BAIXO:None, ESQUERDA:None, DIREITA:None, PORTAL:None}
+        self.access = {CIMA:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT],
+                       BAIXO:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT],
+                       ESQUERDA:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT],
+                       DIREITA:[PACMAN, BLINKY, PINKY, INKY, CLYDE, FRUIT]}
 
-    def denyAccess(self, direcao, andarilho):
-        if andarilho.nome in self.access[direcao]:
-            self.access[direcao].remove(andarilho.nome)
+    def denyAccess(self, direction, entity):
+        if entity.name in self.access[direction]:
+            self.access[direction].remove(entity.name)
 
-    def allowAccess(self, direcao, andarilho):
-        if andarilho.nome not in self.access[direcao]:
-            self.access[direcao].append(andarilho.nome)
+    def allowAccess(self, direction, entity):
+        if entity.name not in self.access[direction]:
+            self.access[direction].append(entity.name)
 
-    def desenha(self, tela):
-        for n in self.vizinhos.keys():
-            if self.vizinhos[n] is not None:
-                line_start = self.posicao.tupla()
-                line_end = self.vizinhos[n].posicao.tupla()
-                pygame.draw.line(tela, BRANCO, line_start, line_end, 4)
-                pygame.draw.circle(tela, VERMELHO, self.posicao.intTupla(), 12)
+    def render(self, screen):
+        for n in self.neighbors.keys():
+            if self.neighbors[n] is not None:
+                line_start = self.position.asTuple()
+                line_end = self.neighbors[n].position.asTuple()
+                pygame.draw.line(screen, WHITE, line_start, line_end, 4)
+                pygame.draw.circle(screen, RED, self.position.asInt(), 12)
+
 
 class GrupoNo(object):
-    def __init__(self, nivel):
-        self.nivel = nivel
-        self.dicionarioNo = {}
-        self.simboloNo = ['+', 'P', 'n']
-        self.simboloCaminho = ['.', '-', '|', 'p']
-        data = self.leituraMapa(nivel)
-        self.criarTabelaNo(data)
-        self.conectaHorizontal(data)
-        self.conectaVertical(data)
+    def __init__(self, level):
+        self.level = level
+        self.nodesLUT = {}
+        self.nodeSymbols = ['+', 'P', 'n']
+        self.pathSymbols = ['.', '-', '|', 'p']
+        data = self.readMazeFile(level)
+        self.createNodeTable(data)
+        self.connectHorizontally(data)
+        self.connectVertically(data)
         self.homekey = None
 
-    def leituraMapa(self, arquivo_texto):
-        return np.loadtxt(arquivo_texto, dtype='<U1')
+    def readMazeFile(self, textfile):
+        return np.loadtxt(textfile, dtype='<U1')
 
-    def criarTabelaNo(self, dados, xoffset=0, yoffset=0):
-        for linha in list(range(dados.shape[0])):
-            for coluna in list(range(dados.shape[1])):
-                if dados[linha][coluna] in self.simboloNo:
-                    x, y = self.constroiMapa(coluna+xoffset, linha+yoffset)
-                    self.dicionarioNo[(x, y)] = No(x, y)
+    def createNodeTable(self, data, xoffset=0, yoffset=0):
+        for row in list(range(data.shape[0])):
+            for col in list(range(data.shape[1])):
+                if data[row][col] in self.nodeSymbols:
+                    x, y = self.constructKey(col+xoffset, row+yoffset)
+                    self.nodesLUT[(x, y)] = Node(x, y)
 
-    def constroiMapa(self, x, y):
-        return x*ALTURA_NO, y*LARGURA_NO
+    def constructKey(self, x, y):
+        return x * TILEWIDTH, y * TILEHEIGHT
 
-    def conectaHorizontal(self, dados, xoffset=0, yoffset=0):
-        for linha in list(range(dados.shape[0])):
-            chave = None
-            for coluna in list(range(dados.shape[1])):
-                if dados[linha][coluna] in self.simboloNo:
-                    if chave is None:
-                        chave = self.constroiMapa(coluna + xoffset, linha + yoffset)
+
+    def connectHorizontally(self, data, xoffset=0, yoffset=0):
+        for row in list(range(data.shape[0])):
+            key = None
+            for col in list(range(data.shape[1])):
+                if data[row][col] in self.nodeSymbols:
+                    if key is None:
+                        key = self.constructKey(col+xoffset, row+yoffset)
                     else:
-                        outra_chave = self.constroiMapa(coluna + xoffset, linha + yoffset)
-                        self.dicionarioNo[chave].vizinhos[DIREITA] = self.dicionarioNo[outra_chave]
-                        self.dicionarioNo[outra_chave].vizinhos[ESQUERDA] = self.dicionarioNo[chave]
-                        chave = outra_chave
-                elif dados[linha][coluna] not in self.simboloCaminho:
-                    chave = None
+                        otherkey = self.constructKey(col+xoffset, row+yoffset)
+                        self.nodesLUT[key].neighbors[DIREITA] = self.nodesLUT[otherkey]
+                        self.nodesLUT[otherkey].neighbors[ESQUERDA] = self.nodesLUT[key]
+                        key = otherkey
+                elif data[row][col] not in self.pathSymbols:
+                    key = None
 
-    def conectaVertical(self, dados, xoffset=0, yoffset=0):
-        dadosT = dados.transpose()
-        for coluna in list(range(dadosT.shape[0])):
-            chave = None
-            for linha in list(range(dadosT.shape[1])):
-                if dadosT[coluna][linha] in self.simboloNo:
-                    if chave is None:
-                        chave = self.constroiMapa(coluna + xoffset, linha + yoffset)
+    def connectVertically(self, data, xoffset=0, yoffset=0):
+        dataT = data.transpose()
+        for col in list(range(dataT.shape[0])):
+            key = None
+            for row in list(range(dataT.shape[1])):
+                if dataT[col][row] in self.nodeSymbols:
+                    if key is None:
+                        key = self.constructKey(col+xoffset, row+yoffset)
                     else:
-                        otherkey = self.constroiMapa(coluna + xoffset, linha + yoffset)
-                        self.dicionarioNo[chave].vizinhos[BAIXO] = self.dicionarioNo[otherkey]
-                        self.dicionarioNo[otherkey].vizinhos[CIMA] = self.dicionarioNo[chave]
-                        chave = otherkey
-                elif dadosT[coluna][linha] not in self.simboloCaminho:
-                    chave = None
+                        otherkey = self.constructKey(col+xoffset, row+yoffset)
+                        self.nodesLUT[key].neighbors[BAIXO] = self.nodesLUT[otherkey]
+                        self.nodesLUT[otherkey].neighbors[CIMA] = self.nodesLUT[key]
+                        key = otherkey
+                elif dataT[col][row] not in self.pathSymbols:
+                    key = None
+
+
+    def pegaNoInicial(self):
+        nodes = list(self.nodesLUT.values())
+        return nodes[0]
+
+    def setPortalPair(self, pair1, pair2):
+        key1 = self.constructKey(*pair1)
+        key2 = self.constructKey(*pair2)
+        if key1 in self.nodesLUT.keys() and key2 in self.nodesLUT.keys():
+            self.nodesLUT[key1].neighbors[PORTAL] = self.nodesLUT[key2]
+            self.nodesLUT[key2].neighbors[PORTAL] = self.nodesLUT[key1]
 
     def createHomeNodes(self, xoffset, yoffset):
-        homedata = np.array([['X', 'X', '+', 'X', 'X'],
-                             ['X', 'X', '.', 'X', 'X'],
-                             ['+', 'X', '.', 'X', '+'],
-                             ['+', '.', '+', '.', '+'],
-                             ['+', 'X', 'X', 'X', '+']])
+        homedata = np.array([['X','X','+','X','X'],
+                             ['X','X','.','X','X'],
+                             ['+','X','.','X','+'],
+                             ['+','.','+','.','+'],
+                             ['+','X','X','X','+']])
 
-        self.criarTabelaNo(homedata, xoffset, yoffset)
-        self.conectaHorizontal(homedata, xoffset, yoffset)
-        self.conectaVertical(homedata, xoffset, yoffset)
-        self.homekey = self.constroiMapa(xoffset + 2, yoffset)
+        self.createNodeTable(homedata, xoffset, yoffset)
+        self.connectHorizontally(homedata, xoffset, yoffset)
+        self.connectVertically(homedata, xoffset, yoffset)
+        self.homekey = self.constructKey(xoffset+2, yoffset)
         return self.homekey
 
-    def conectaNoCasa(self, homekey, otherkey, direction):
-        key = self.constroiMapa(*otherkey)
-        self.dicionarioNo[homekey].vizinhos[direction] = self.dicionarioNo[key]
-        self.dicionarioNo[key].vizinhos[direction * -1] = self.dicionarioNo[homekey]
+    def connectHomeNodes(self, homekey, otherkey, direction):
+        key = self.constructKey(*otherkey)
+        self.nodesLUT[homekey].neighbors[direction] = self.nodesLUT[key]
+        self.nodesLUT[key].neighbors[direction*-1] = self.nodesLUT[homekey]
 
-    def pegaNoPixel(self, xpixel, ypixel):
-        if (xpixel, ypixel) in self.dicionarioNo.keys():
-            return self.dicionarioNo[(xpixel, ypixel)]
+    def getNodeFromPixels(self, xpixel, ypixel):
+        if (xpixel, ypixel) in self.nodesLUT.keys():
+            return self.nodesLUT[(xpixel, ypixel)]
         return None
 
     def pegaNoTiles(self, col, row):
-        x, y = self.constroiMapa(col, row)
-        if (x, y) in self.dicionarioNo.keys():
-            return self.dicionarioNo[(x, y)]
+        x, y = self.constructKey(col, row)
+        if (x, y) in self.nodesLUT.keys():
+            return self.nodesLUT[(x, y)]
         return None
 
-    def pegaNoInicial(self):
-        nos = list(self.dicionarioNo.values())
-        return nos[0]
+    def denyAccess(self, col, row, direction, entity):
+        node = self.pegaNoTiles(col, row)
+        if node is not None:
+            node.denyAccess(direction, entity)
 
-    def desenha(self, tela):
-        for no in self.dicionarioNo.values():
-            no.desenha(tela)
+    def allowAccess(self, col, row, direction, entity):
+        node = self.pegaNoTiles(col, row)
+        if node is not None:
+            node.allowAccess(direction, entity)
 
-    def denyAccess(self, coluna, linha, direcao, andarilho):
-        no = self.pegaNoTiles(coluna, linha)
-        if no is not None:
-            no.denyAccess(direcao, andarilho)
+    def denyAccessList(self, col, row, direction, entities):
+        for entity in entities:
+            self.denyAccess(col, row, direction, entity)
 
-    def allowAccess(self, coluna, linha, direcao, andarilho):
-        no = self.pegaNoTiles(coluna, linha)
-        if no is not None:
-            no.allowAccess(direcao, andarilho)
+    def allowAccessList(self, col, row, direction, entities):
+        for entity in entities:
+            self.allowAccess(col, row, direction, entity)
 
-    def denyAccessList(self, coluna, linha, direcao, andarilhos):
-        for andarilho in andarilhos:
-            self.denyAccess(coluna, linha, direcao, andarilho)
+    def denyHomeAccess(self, entity):
+        self.nodesLUT[self.homekey].denyAccess(BAIXO, entity)
 
-    def allowAccessList(self, coluna, linha, direcao, andarilhos):
-        for andarilho in andarilhos:
-            self.allowAccess(coluna, linha, direcao, andarilho)
+    def allowHomeAccess(self, entity):
+        self.nodesLUT[self.homekey].allowAccess(BAIXO, entity)
 
-    def denyHomeAccess(self, andarilho):
-        self.dicionarioNo[self.homekey].denyAccess(BAIXO, andarilho)
+    def denyHomeAccessList(self, entities):
+        for entity in entities:
+            self.denyHomeAccess(entity)
 
-    def allowHomeAccess(self, andarilho):
-        self.dicionarioNo[self.homekey].allowAccess(BAIXO, andarilho)
+    def allowHomeAccessList(self, entities):
+        for entity in entities:
+            self.allowHomeAccess(entity)
 
-    def denyHomeAccessList(self, andarilhos):
-        for andarilho in andarilhos:
-            self.denyHomeAccess(andarilho)
-
-    def allowHomeAccessList(self, andarilhos):
-        for andarilho in andarilhos:
-            self.allowHomeAccess(andarilho)
+    def render(self, screen):
+        for node in self.nodesLUT.values():
+            node.desenha(screen)

@@ -1,60 +1,61 @@
 from constantes import *
 
-class ModoPrincipal(object):
+class MainMode(object):
     def __init__(self):
         self.timer = 0
-        self.salvar()
-
-    def update(self, dt):
-        self.timer += dt
-        if self.timer >= self.tempo:
-            if self.modo is INICIO:
-                self.peseguir()
-            elif self.modo is PERSEGUIR:
-                self.salvar()
-
-    def salvar(self):
-        self.modo = INICIO
-        self.tempo = 7
-        self.timer = 0
-
-    def peseguir(self):
-        self.modo = PERSEGUIR
-        self.tempo = 20
-        self.timer = 0
-
-class ModeController(object):
-    def __init__(self, andarilho):
-        self.timer = 0
-        self.tempo = None
-        self.modoPrincipal = ModoPrincipal()
-        self.atual = self.modoPrincipal.modo
-        self.andarilho = andarilho
+        self.scatter()
 
     def atualiza(self, dt):
-        self.modoPrincipal.update(dt)
-        if self.atual is ALEATORIO:
-            self.timer += dt
-            if self.timer >= self.tempo:
-                self.tempo = None
-                self.andarilho.normalMode()
-                self.atual = self.modoPrincipal.modo
-        elif self.atual in [INICIO, PERSEGUIR]:
-            self.atual = self.modoPrincipal.modo
+        self.timer += dt
+        if self.timer >= self.time:
+            if self.mode is SCATTER:
+                self.chase()
+            elif self.mode is CHASE:
+                self.scatter()
 
-        if self.atual is SPAWN:
-            if self.andarilho.no == self.andarilho.spawnNode:
-                self.andarilho.normalMode()
-                self.atual = self.modoPrincipal.modo
+    def scatter(self):
+        self.mode = SCATTER
+        self.time = 7
+        self.timer = 0
+
+    def chase(self):
+        self.mode = CHASE
+        self.time = 20
+        self.timer = 0
+
+
+class ModeController(object):
+    def __init__(self, entity):
+        self.timer = 0
+        self.time = None
+        self.mainmode = MainMode()
+        self.current = self.mainmode.mode
+        self.entity = entity
+
+    def atualiza(self, dt):
+        self.mainmode.atualiza(dt)
+        if self.current is FREIGHT:
+            self.timer += dt
+            if self.timer >= self.time:
+                self.time = None
+                self.entity.normalMode()
+                self.current = self.mainmode.mode
+        elif self.current in [SCATTER, CHASE]:
+            self.current = self.mainmode.mode
+
+        if self.current is SPAWN:
+            if self.entity.node == self.entity.spawnNode:
+                self.entity.normalMode()
+                self.current = self.mainmode.mode
+
+    def setFreightMode(self):
+        if self.current in [SCATTER, CHASE]:
+            self.timer = 0
+            self.time = 7
+            self.current = FREIGHT
+        elif self.current is FREIGHT:
+            self.timer = 0
 
     def setSpawnMode(self):
-        if self.atual is ALEATORIO:
-            self.atual = SPAWN
-
-    def defineModoAleatorio(self):
-        if self.atual in [INICIO, PERSEGUIR]:
-            self.timer = 0
-            self.tempo = 7
-            self.atual = ALEATORIO
-        elif self.atual is ALEATORIO:
-            self.timer = 0
+        if self.current is FREIGHT:
+            self.current = SPAWN

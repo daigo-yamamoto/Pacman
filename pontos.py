@@ -3,69 +3,70 @@ from vetor import Vetor2
 from constantes import *
 import numpy as np
 
-class Pontos(object):
-    def __init__(self, linha, coluna):
-        self.nome = PONTOS
-        self.posicao = Vetor2(coluna * LARGURA_NO, linha * ALTURA_NO)
-        self.cor = BRANCO
-        self.raio = int(2 * LARGURA_NO / 16)
-        self.raio_colisao = int(2 * LARGURA_NO / 16)
-        self.pontos = 10
-        self.visivel = True
 
-    def desenha(self, tela):
-        if self.visivel:
-            ajuste = Vetor2(LARGURA_NO, ALTURA_NO) / 2
-            p = self.posicao + ajuste
-            pygame.draw.circle(tela, self.cor, p.intTupla(), self.raio)
+class Pellet(object):
+    def __init__(self, row, column):
+        self.name = PELLET
+        self.position = Vetor2(column * TILEWIDTH, row * TILEHEIGHT)
+        self.color = WHITE
+        self.radius = int(2 * TILEWIDTH / 16)
+        self.collideRadius = 2 * TILEWIDTH / 16
+        self.points = 10
+        self.visible = True
+
+    def desenha(self, screen):
+        if self.visible:
+            adjust = Vetor2(TILEWIDTH, TILEHEIGHT) / 2
+            p = self.position + adjust
+            pygame.draw.circle(screen, self.color, p.asInt(), self.radius)
 
 
-class PontoPoder(Pontos):
-    def __init__(self, linha, coluna):
-        Pontos.__init__(self, linha, coluna)
-        self.nome = PONTOSPODER
-        self.raio = int(8 * LARGURA_NO / 16)
-        self.pontos = 50
-        self.tempo = 0.2
+class PowerPellet(Pellet):
+    def __init__(self, row, column):
+        Pellet.__init__(self, row, column)
+        self.name = POWERPELLET
+        self.radius = int(8 * TILEWIDTH / 16)
+        self.points = 50
+        self.flashTime = 0.2
         self.timer = 0
 
-    def atualiza(self, dt):
+    def update(self, dt):
         self.timer += dt
-        if self.timer >= self.tempo:
-            self.visivel = not self.visivel
+        if self.timer >= self.flashTime:
+            self.visible = not self.visible
             self.timer = 0
 
 
 class GrupoPontos(object):
-    def __init__(self, arquivo_pontos):
-        self.lista_pontos = []
-        self.pontos_poder = []
-        self.criaListaPontos(arquivo_pontos)
-        self.num_pontos_comidos = 0
+    def __init__(self, pelletfile):
+        self.pelletList = []
+        self.powerpellets = []
+        self.createPelletList(pelletfile)
+        self.numEaten = 0
 
     def atualiza(self, dt):
-        for ponto_poder in self.pontos_poder:
-            ponto_poder.atualiza(dt)
+        for powerpellet in self.powerpellets:
+            powerpellet.update(dt)
 
-    def criaListaPontos(self, arquivo_pontos):
-        dados = self.lerArquivoPontos(arquivo_pontos)
-        for linha in range(dados.shape[0]):
-            for coluna in range(dados.shape[1]):
-                if dados[linha][coluna] in ['.', '+']:
-                    self.lista_pontos.append(Pontos(linha, coluna))
-                elif dados[linha][coluna] in ['P', 'p']:
-                    pp = PontoPoder(linha, coluna)
-                    self.lista_pontos.append(pp)
-                    self.pontos_poder.append(pp)
+    def createPelletList(self, pelletfile):
+        data = self.readPelletfile(pelletfile)
+        for row in range(data.shape[0]):
+            for col in range(data.shape[1]):
+                if data[row][col] in ['.', '+']:
+                    self.pelletList.append(Pellet(row, col))
+                elif data[row][col] in ['P', 'p']:
+                    pp = PowerPellet(row, col)
+                    self.pelletList.append(pp)
+                    self.powerpellets.append(pp)
 
-    def lerArquivoPontos(self, arquivo_texto):
-        return np.loadtxt(arquivo_texto, dtype='<U1')
+    def readPelletfile(self, textfile):
+        return np.loadtxt(textfile, dtype='<U1')
 
-    def vazio(self):
-        if len(self.lista_pontos) == 0:
+    def isEmpty(self):
+        if len(self.pelletList) == 0:
             return True
         return False
 
     def desenha(self, screen):
-        for pellet in self.lista_pontos:
+        for pellet in self.pelletList:
             pellet.desenha(screen)
