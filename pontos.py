@@ -28,7 +28,7 @@ class PontoPoder(Pontos):
         self.tempo = 0.2
         self.timer = 0
 
-    def update(self, dt):
+    def atualiza(self, dt):
         self.timer += dt
         if self.timer >= self.tempo:
             self.visivel = not self.visivel
@@ -44,7 +44,7 @@ class GrupoPontos(object):
 
     def atualiza(self, dt):
         for ponto_poder in self.pontos_poder:
-            ponto_poder.update(dt)
+            ponto_poder.atualiza(dt)
 
     def criaListaPontos(self, arquivo_pontos):
         dados = self.lerArquivoPontos(arquivo_pontos)
