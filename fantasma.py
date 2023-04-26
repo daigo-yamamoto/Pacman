@@ -45,7 +45,7 @@ class Fantasma(Andarilhos):
         self.noCasa.denyAccess(BAIXO, self)
 
     def spawn(self):
-        self.chegada = self.spawnNode.position
+        self.chegada = self.spawnNode.posicao
 
     def defineNoSpawn(self, node):
         self.spawnNode = node

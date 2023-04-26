@@ -42,7 +42,7 @@ class GameController(object):
     def comecaJogo(self):
         self.setTelaFundo()
         self.mazesprites = MazeSprites("mapa.txt", "mapa_rotacionado.txt")
-        self.tela_fundo = self.mazesprites.constructBackground(self.tela_fundo, 1)
+        self.tela_fundo = self.mazesprites.constructBackground(self.tela_fundo, 0)
         self.no = GrupoNo("mapa.txt")
         homekey = self.no.createHomeNodes(11.5, 14)
         self.no.conectaNoCasa(homekey, (12, 14), ESQUERDA)
@@ -144,10 +144,10 @@ class GameController(object):
         self.pacman.desenha(self.tela)
         self.fantasmas.desenha(self.tela)
 
-        for i in range(len(self.lifesprites.images)):
-            x = self.lifesprites.images[i].get_width() * i
-            y = ALTURA_TELA - self.lifesprites.images[i].get_height()
-            self.tela.blit(self.lifesprites.images[i], (x, y))
+        for i in range(len(self.lifesprites.imagens)):
+            x = self.lifesprites.imagens[i].get_width() * i
+            y = ALTURA_TELA - self.lifesprites.imagens[i].get_height()
+            self.tela.blit(self.lifesprites.imagens[i], (x, y))
 
         pygame.display.update()
 
