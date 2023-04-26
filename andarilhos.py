@@ -18,6 +18,7 @@ class Andarilhos(object):
         self.chegada = None
         self.metodoDirecionamento = self.direcaoAleatoria
         self.setStartNode(no)
+        self.image = None
 
     def setStartNode(self, no):
         self.no = no
@@ -65,8 +66,11 @@ class Andarilhos(object):
 
     def desenha(self, tela):
         if self.visivel:
-            p = self.posicao.intTupla()
-            pygame.draw.circle(tela, self.cor, p, self.raio)
+            if self.image is not None:
+                tela.blit(self.image, self.posicao.tupla())
+            else:
+                p = self.posicao.intTupla()
+                pygame.draw.circle(tela, self.cor, p, self.raio)
 
     def direcoesValidas(self):
         direcoes = []

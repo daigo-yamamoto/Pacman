@@ -4,6 +4,7 @@ from vetor import Vetor2
 from constantes import *
 from andarilhos import Andarilhos
 from modos import ModeController
+from sprites import GhostSprites
 
 class Fantasma(Andarilhos):
     def __init__(self, no, pacman=None, bafao=None):
@@ -113,14 +114,16 @@ class GrupoFantasma(object):
 class Bafao(Fantasma):
     def __init__(self, no, pacman=None, bafao=None):
         Fantasma.__init__(self, no, pacman, bafao)
-        self.name = BAFAO
+        self.nome = BAFAO
         self.color = VERMELHO
+        self.sprites = GhostSprites(self)
 
 class Alonso(Fantasma):
     def __init__(self, no, pacman=None, alonso=None):
         Fantasma.__init__(self, no, pacman, alonso)
-        self.name = ALONSO
+        self.nome = ALONSO
         self.color = ROSA
+        self.sprites = GhostSprites(self)
 
     def inicio(self):
         self.chegada = Vetor2(LARGURA_NO * NUM_COLUNA, 0)
@@ -131,8 +134,9 @@ class Alonso(Fantasma):
 class Rogerio(Fantasma):
     def __init__(self, no, pacman=None, rogerio=None):
         Fantasma.__init__(self, no, pacman, rogerio)
-        self.name = ROGERIO
+        self.nome = ROGERIO
         self.color = AZULCLARO
+        self.sprites = GhostSprites(self)
 
     def inicio(self):
         self.chegada = Vetor2(LARGURA_NO*NUM_COLUNA, ALTURA_NO*NUM_LINHA)
@@ -147,6 +151,7 @@ class Manga(Fantasma):
         Fantasma.__init__(self, no, pacman, manga)
         self.nome = MANGA
         self.cor = LARANJA
+        self.sprites = GhostSprites(self)
 
     def inicio(self):
         self.chegada = Vetor2(0, LARGURA_NO*NUM_LINHA)

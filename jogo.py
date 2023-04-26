@@ -7,6 +7,7 @@ from pontos import GrupoPontos
 from fantasma import GrupoFantasma
 from fruta import Fruta
 from pausa import Pausa
+from sprites import LifeSprites
 
 
 class GameController(object):
@@ -18,12 +19,14 @@ class GameController(object):
         self.fruta = None
         self.pausa = Pausa(True)
         self.vidas = 5
+        self.lifesprites = LifeSprites(self.vidas)
 
     def restartGame(self):
         self.vidas = 5
         self.pausa.pausado = True
         self.fruta = None
         self.comecaJogo()
+        self.lifesprites.resetLives(self.vidas)
 
     def resetLevel(self):
         self.pausa.paused = True
@@ -114,6 +117,7 @@ class GameController(object):
                 elif fantasma.modo.atual is not SPAWN:
                     if self.pacman.vivo:
                         self.vidas -= 1
+                        self.lifesprites.removeImage()
                         self.pacman.morre()
                         self.fantasmas.esconde()
                         if self.vidas <= 0:
@@ -137,6 +141,12 @@ class GameController(object):
             self.fruta.desenha(self.tela)
         self.pacman.desenha(self.tela)
         self.fantasmas.desenha(self.tela)
+
+        for i in range(len(self.lifesprites.images)):
+            x = self.lifesprites.images[i].get_width() * i
+            y = ALTURA_TELA - self.lifesprites.images[i].get_height()
+            self.tela.blit(self.lifesprites.images[i], (x, y))
+
         pygame.display.update()
 
     def checaEventoPontos(self):

@@ -3,6 +3,7 @@ from pygame.locals import *
 from vetor import Vetor2
 from constantes import *
 from andarilhos import Andarilhos
+from sprites import PacmanSprites
 
 class Pacman(Andarilhos):
     def __init__(self, no):
@@ -12,6 +13,7 @@ class Pacman(Andarilhos):
         self.direcao = ESQUERDA
         self.setBetweenNodes(ESQUERDA)
         self.vivo = True
+        self.sprites = PacmanSprites(self)
 
     def atualiza(self, dt):
         self.posicao += self.direcoes[self.direcao] * self.velocidade * dt
