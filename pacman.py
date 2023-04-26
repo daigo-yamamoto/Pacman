@@ -11,26 +11,26 @@ class Pacman(Andarilho):
         Andarilho.__init__(self, node)
         self.nome = PACMAN
         self.cor = AMARELO
-        self.direction = ESQUERDA
+        self.direcao = ESQUERDA
         self.setBetweenNodes(ESQUERDA)
-        self.alive = True
+        self.vivo = True
         self.sprites = PacmanSprites(self)
 
     def reset(self):
         Andarilho.reset(self)
-        self.direction = ESQUERDA
+        self.direcao = ESQUERDA
         self.setBetweenNodes(ESQUERDA)
-        self.alive = True
+        self.vivo = True
         self.image = self.sprites.getStartImage()
         self.sprites.reset()
 
     def die(self):
-        self.alive = False
-        self.direction = PARADO
+        self.vivo = False
+        self.direcao = PARADO
 
     def atualiza(self, dt):
         self.sprites.update(dt)
-        self.position += self.directions[self.direction] * self.speed * dt
+        self.position += self.directions[self.direcao] * self.speed * dt
         direction = self.getValidKey()
         if self.overshotTarget():
             self.node = self.target
@@ -38,12 +38,12 @@ class Pacman(Andarilho):
                 self.node = self.node.neighbors[PORTAL]
             self.target = self.getNewTarget(direction)
             if self.target is not self.node:
-                self.direction = direction
+                self.direcao = direction
             else:
-                self.target = self.getNewTarget(self.direction)
+                self.target = self.getNewTarget(self.direcao)
 
             if self.target is self.node:
-                self.direction = PARADO
+                self.direcao = PARADO
             self.setPosition()
         else:
             if self.oppositeDirection(direction):

@@ -10,12 +10,12 @@ class Fruta(Andarilho):
         self.cor = VERDE
         self.lifespan = 5
         self.timer = 0
-        self.destroy = False
-        self.points = 100
+        self.destruido = False
+        self.pontos = 100
         self.setBetweenNodes(DIREITA)
         self.sprites = FruitSprites(self)
 
     def atualiza(self, dt):
         self.timer += dt
         if self.timer >= self.lifespan:
-            self.destroy = True
+            self.destruido = True

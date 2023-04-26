@@ -56,7 +56,7 @@ class GameController(object):
         self.fantasmas.alonso.setStartNode(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
         self.fantasmas.rogerio.setStartNode(self.no.pegaNoTiles(0 + 11.5, 3 + 14))
         self.fantasmas.manga.setStartNode(self.no.pegaNoTiles(4 + 11.5, 3 + 14))
-        self.fantasmas.setSpawnNode(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
+        self.fantasmas.defineNoSpawn(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
 
         self.no.denyHomeAccess(self.pacman)
         self.no.denyHomeAccessList(self.fantasmas)
@@ -79,7 +79,7 @@ class GameController(object):
             self.checaEventoPontos()
             self.checaEventoFantasma()
 
-        if self.pacman.alive:
+        if self.pacman.vivo:
             if not self.pausa.paused:
                 self.pacman.atualiza(dt)
         else:
@@ -106,7 +106,7 @@ class GameController(object):
                 exit()
             elif event.type == KEYDOWN:
                 if event.key == K_SPACE:
-                    if self.pacman.alive:
+                    if self.pacman.vivo:
                         self.pausa.setPause(playerPaused=True)
                         if not self.pausa.paused:
                             self.mostraAndarilhos()
@@ -122,7 +122,7 @@ class GameController(object):
                 self.fantasmas.manga.startNode.allowAccess(ESQUERDA, self.fantasmas.manga)
             self.pontos.pelletList.remove(pontos)
             if pontos.nome == PONTOPODER:
-                self.fantasmas.startFreight()
+                self.fantasmas.iniciaAleatorio()
             if self.pontos.isEmpty():
                 self.flashBG = True
                 self.escondeAndarilhos()
@@ -130,30 +130,30 @@ class GameController(object):
     def checaEventoFantasma(self):
         for ghost in self.fantasmas:
             if self.pacman.collideGhost(ghost):
-                if ghost.mode.current is ALEATORIO:
+                if ghost.modo.atual is ALEATORIO:
                     self.pacman.visible = False
                     ghost.visible = False
                     self.atualizaPontos(ghost.pontos)
-                    self.fantasmas.updatePoints()
+                    self.fantasmas.atualizaPontos()
                     self.pausa.setPause(pauseTime=1, func=self.mostraAndarilhos)
                     ghost.startSpawn()
                     self.no.allowHomeAccess(ghost)
-                elif ghost.mode.current is not SPAWN:
-                    if self.pacman.alive:
+                elif ghost.modo.atual is not SPAWN:
+                    if self.pacman.vivo:
                         self.vidas -= 1
                         self.lifesprites.removeImage()
                         self.pacman.die()
-                        self.fantasmas.hide()
+                        self.fantasmas.esconde()
                         if self.vidas <= 0:
                             self.pausa.setPause(pauseTime=3, func=self.restartGame)
 
     def mostraAndarilhos(self):
         self.pacman.visible = True
-        self.fantasmas.show()
+        self.fantasmas.mostra()
 
     def escondeAndarilhos(self):
         self.pacman.visible = False
-        self.fantasmas.hide()
+        self.fantasmas.esconde()
 
     def restartGame(self):
         self.vidas = 5
@@ -174,7 +174,7 @@ class GameController(object):
         if self.fruta is not None:
             self.fruta.desenha(self.tela)
         self.pacman.render(self.tela)
-        self.fantasmas.render(self.tela)
+        self.fantasmas.desenha(self.tela)
 
         for i in range(len(self.lifesprites.images)):
             x = self.lifesprites.images[i].get_width() * i

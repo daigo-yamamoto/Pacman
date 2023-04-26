@@ -7,75 +7,75 @@ from modos import ModeController
 from sprites import GhostSprites
 
 class Fantasma(Andarilho):
-    def __init__(self, no, pacman=None, blinky=None):
+    def __init__(self, no, pacman=None, bafao=None):
         Andarilho.__init__(self, no)
         self.nome = FANTASMA
         self.pontos = 200
-        self.goal = Vetor2()
-        self.directionMethod = self.goalDirection
+        self.chegada = Vetor2()
+        self.metodoDirecionamento = self.direcaoChegada
         self.pacman = pacman
-        self.mode = ModeController(self)
-        self.blinky = blinky
+        self.modo = ModeController(self)
+        self.bafao = bafao
         self.homeNode = no
 
     def reset(self):
         Andarilho.reset(self)
         self.pontos = 200
-        self.directionMethod = self.goalDirection
+        self.metodoDirecionamento = self.direcaoChegada
 
     def atualiza(self, dt):
         self.sprites.update(dt)
-        self.mode.atualiza(dt)
-        if self.mode.current is INICIO:
+        self.modo.atualiza(dt)
+        if self.modo.atual is INICIO:
             self.inicio()
-        elif self.mode.current is PERSEGUIR:
+        elif self.modo.atual is PERSEGUIR:
             self.perseguir()
         Andarilho.atualiza(self, dt)
 
     def inicio(self):
-        self.goal = Vetor2()
+        self.chegada = Vetor2()
 
     def perseguir(self):
-        self.goal = self.pacman.position
+        self.chegada = self.pacman.position
 
     def spawn(self):
-        self.goal = self.spawnNode.position
+        self.chegada = self.spawnNode.position
 
     def setSpawnNode(self, node):
         self.spawnNode = node
 
     def startSpawn(self):
-        self.mode.setSpawnMode()
-        if self.mode.current == SPAWN:
+        self.modo.setSpawnMode()
+        if self.modo.atual == SPAWN:
             self.setSpeed(150)
-            self.directionMethod = self.goalDirection
+            self.metodoDirecionamento = self.direcaoChegada
             self.spawn()
 
     def comecaAleatorio(self):
-        self.mode.setFreightMode()
-        if self.mode.current == ALEATORIO:
+        self.modo.setFreightMode()
+        if self.modo.atual == ALEATORIO:
             self.setSpeed(50)
-            self.directionMethod = self.randomDirection
+            self.metodoDirecionamento = self.randomDirection
 
     def modoNormal(self):
         self.setSpeed(100)
-        self.directionMethod = self.goalDirection
+        self.metodoDirecionamento = self.direcaoChegada
         self.homeNode.denyAccess(BAIXO, self)
 
 
 
 
 class Bafao(Fantasma):
-    def __init__(self, no, pacman=None, blinky=None):
-        Fantasma.__init__(self, no, pacman, blinky)
+    def __init__(self, no, pacman=None, bafao=None):
+        Fantasma.__init__(self, no, pacman, bafao)
         self.nome = BAFAO
         self.cor = VERMELHO
         self.sprites = GhostSprites(self)
 
 
 class Alonso(Fantasma):
-    def __init__(self, no, pacman=None, blinky=None):
-        Fantasma.__init__(self, no, pacman, blinky)
+    def __init__(self, no, pacman=None, bafao=None):
+        Fantasma.__init__(self, no, pacman, bafao)
         self.nome = ALONSO
         self.cor = ROSA
         self.sprites = GhostSprites(self)
@@ -84,12 +84,12 @@ class Alonso(Fantasma):
         self.goal = Vetor2(LARGURANO * NUMCOLUNA, 0)
 
     def perseguir(self):
-        self.goal = self.pacman.position + self.pacman.directions[self.pacman.direction] * LARGURANO * 4
+        self.goal = self.pacman.position + self.pacman.directions[self.pacman.direcao] * LARGURANO * 4
 
 
 class Rogerio(Fantasma):
-    def __init__(self, no, pacman=None, blinky=None):
-        Fantasma.__init__(self, no, pacman, blinky)
+    def __init__(self, no, pacman=None, bafao=None):
+        Fantasma.__init__(self, no, pacman, bafao)
         self.nome = ROGERIO
         self.cor = AZULCLARO
         self.sprites = GhostSprites(self)
@@ -98,14 +98,14 @@ class Rogerio(Fantasma):
         self.goal = Vetor2(LARGURANO * NUMCOLUNA, ALTURANO * NUMLINHA)
 
     def perseguir(self):
-        vec1 = self.pacman.position + self.pacman.directions[self.pacman.direction] * LARGURANO * 2
-        vec2 = (vec1 - self.blinky.position) * 2
-        self.goal = self.blinky.position + vec2
+        vec1 = self.pacman.position + self.pacman.directions[self.pacman.direcao] * LARGURANO * 2
+        vec2 = (vec1 - self.bafao.position) * 2
+        self.goal = self.bafao.position + vec2
 
 
 class Manga(Fantasma):
-    def __init__(self, no, pacman=None, blinky=None):
-        Fantasma.__init__(self, no, pacman, blinky)
+    def __init__(self, no, pacman=None, bafao=None):
+        Fantasma.__init__(self, no, pacman, bafao)
         self.nome = MANGA
         self.cor = LARANJA
         self.sprites = GhostSprites(self)
@@ -119,7 +119,7 @@ class Manga(Fantasma):
         if ds <= (LARGURANO * 8)**2:
             self.inicio()
         else:
-            self.goal = self.pacman.position + self.pacman.directions[self.pacman.direction] * LARGURANO * 4
+            self.goal = self.pacman.position + self.pacman.directions[self.pacman.direcao] * LARGURANO * 4
 
 
 class GrupoFantasma(object):
@@ -137,28 +137,28 @@ class GrupoFantasma(object):
         for ghost in self:
             ghost.atualiza(dt)
 
-    def startFreight(self):
+    def iniciaAleatorio(self):
         for ghost in self:
             ghost.comecaAleatorio()
-        self.resetPoints()
+        self.resetaPonto()
 
-    def setSpawnNode(self, node):
+    def defineNoSpawn(self, node):
         for ghost in self:
             ghost.setSpawnNode(node)
 
-    def updatePoints(self):
+    def atualizaPontos(self):
         for ghost in self:
             ghost.pontos *= 2
 
-    def resetPoints(self):
+    def resetaPonto(self):
         for ghost in self:
             ghost.pontos = 200
 
-    def hide(self):
+    def esconde(self):
         for ghost in self:
             ghost.visible = False
 
-    def show(self):
+    def mostra(self):
         for ghost in self:
             ghost.visible = True
 
@@ -166,7 +166,7 @@ class GrupoFantasma(object):
         for ghost in self:
             ghost.reset()
 
-    def render(self, screen):
+    def desenha(self, screen):
         for ghost in self:
             ghost.render(screen)
 

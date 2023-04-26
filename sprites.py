@@ -41,20 +41,20 @@ class PacmanSprites(Spritesheet):
         self.animations[MORTO] = Animacao(((24, 4), (26, 4), (28, 4), (30, 4), (32, 4)), velocidade=1, loop=False)
 
     def update(self, dt):
-        if self.entity.alive == True:
-            if self.entity.direction == ESQUERDA:
+        if self.entity.vivo == True:
+            if self.entity.direcao == ESQUERDA:
                 self.entity.image = self.getImage(*self.animations[ESQUERDA].atualiza(dt))
                 self.stopimage = (2, 0)
-            elif self.entity.direction == DIREITA:
+            elif self.entity.direcao == DIREITA:
                 self.entity.image = self.getImage(*self.animations[DIREITA].atualiza(dt))
                 self.stopimage = (28, 0)
-            elif self.entity.direction == BAIXO:
+            elif self.entity.direcao == BAIXO:
                 self.entity.image = self.getImage(*self.animations[BAIXO].atualiza(dt))
                 self.stopimage = (30, 2)
-            elif self.entity.direction == CIMA:
+            elif self.entity.direcao == CIMA:
                 self.entity.image = self.getImage(*self.animations[CIMA].atualiza(dt))
                 self.stopimage = (8, 2)
-            elif self.entity.direction == PARADO:
+            elif self.entity.direcao == PARADO:
                 self.entity.image = self.getImage(*self.stopimage)
         else:
             self.entity.image = self.getImage(*self.animations[MORTO].atualiza(dt))
@@ -79,25 +79,25 @@ class GhostSprites(Spritesheet):
 
     def update(self, dt):
         x = self.x[self.entity.nome]
-        if self.entity.mode.current in [INICIO, PERSEGUIR]:
-            if self.entity.direction == ESQUERDA:
+        if self.entity.modo.atual in [INICIO, PERSEGUIR]:
+            if self.entity.direcao == ESQUERDA:
                 self.entity.image = self.getImage(x, 8)
-            elif self.entity.direction == DIREITA:
+            elif self.entity.direcao == DIREITA:
                 self.entity.image = self.getImage(x, 10)
-            elif self.entity.direction == BAIXO:
+            elif self.entity.direcao == BAIXO:
                 self.entity.image = self.getImage(x, 6)
-            elif self.entity.direction == CIMA:
+            elif self.entity.direcao == CIMA:
                 self.entity.image = self.getImage(x, 4)
-        elif self.entity.mode.current == ALEATORIO:
+        elif self.entity.modo.atual == ALEATORIO:
             self.entity.image = self.getImage(10, 4)
-        elif self.entity.mode.current == SPAWN:
-            if self.entity.direction == ESQUERDA:
+        elif self.entity.modo.atual == SPAWN:
+            if self.entity.direcao == ESQUERDA:
                 self.entity.image = self.getImage(8, 8)
-            elif self.entity.direction == DIREITA:
+            elif self.entity.direcao == DIREITA:
                 self.entity.image = self.getImage(8, 10)
-            elif self.entity.direction == BAIXO:
+            elif self.entity.direcao == BAIXO:
                 self.entity.image = self.getImage(8, 6)
-            elif self.entity.direction == CIMA:
+            elif self.entity.direcao == CIMA:
                 self.entity.image = self.getImage(8, 4)
 
     def getStartImage(self):

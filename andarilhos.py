@@ -10,15 +10,15 @@ class Andarilho(object):
         self.nome = None
         self.directions = {CIMA: Vetor2(0, -1), BAIXO: Vetor2(0, 1),
                            ESQUERDA: Vetor2(-1, 0), DIREITA: Vetor2(1, 0), PARADO: Vetor2()}
-        self.direction = PARADO
+        self.direcao = PARADO
         self.setSpeed(100)
         self.radius = 10
         self.collideRadius = 5
         self.cor = BRANCO
         self.visible = True
         self.disablePortal = False
-        self.goal = None
-        self.directionMethod = self.randomDirection
+        self.chegada = None
+        self.metodoDirecionamento = self.randomDirection
         self.setStartNode(node)
         self.image = None
 
@@ -26,20 +26,20 @@ class Andarilho(object):
         self.position = self.node.position.copia()
 
     def atualiza(self, dt):
-        self.position += self.directions[self.direction] * self.speed * dt
+        self.position += self.directions[self.direcao] * self.speed * dt
 
         if self.overshotTarget():
             self.node = self.target
             directions = self.validDirections()
-            direction = self.directionMethod(directions)
+            direction = self.metodoDirecionamento(directions)
             if not self.disablePortal:
                 if self.node.neighbors[PORTAL] is not None:
                     self.node = self.node.neighbors[PORTAL]
             self.target = self.getNewTarget(direction)
             if self.target is not self.node:
-                self.direction = direction
+                self.direcao = direction
             else:
-                self.target = self.getNewTarget(self.direction)
+                self.target = self.getNewTarget(self.direcao)
 
             self.setPosition()
 
@@ -65,14 +65,14 @@ class Andarilho(object):
         return False
 
     def reverseDirection(self):
-        self.direction *= -1
+        self.direcao *= -1
         temp = self.node
         self.node = self.target
         self.target = temp
 
     def oppositeDirection(self, direction):
         if direction is not PARADO:
-            if direction == self.direction * -1:
+            if direction == self.direcao * -1:
                 return True
         return False
 
@@ -80,19 +80,19 @@ class Andarilho(object):
         directions = []
         for key in [CIMA, BAIXO, ESQUERDA, DIREITA]:
             if self.validDirection(key):
-                if key != self.direction * -1:
+                if key != self.direcao * -1:
                     directions.append(key)
         if len(directions) == 0:
-            directions.append(self.direction * -1)
+            directions.append(self.direcao * -1)
         return directions
 
     def randomDirection(self, directions):
         return directions[randint(0, len(directions) - 1)]
 
-    def goalDirection(self, directions):
+    def direcaoChegada(self, directions):
         distances = []
         for direction in directions:
-            vec = self.node.position + self.directions[direction] * LARGURANO - self.goal
+            vec = self.node.position + self.directions[direction] * LARGURANO - self.chegada
             distances.append(vec.moduloQuadrado())
         index = distances.index(min(distances))
         return directions[index]
@@ -110,7 +110,7 @@ class Andarilho(object):
 
     def reset(self):
         self.setStartNode(self.startNode)
-        self.direction = PARADO
+        self.direcao = PARADO
         self.speed = 100
         self.visible = True
 

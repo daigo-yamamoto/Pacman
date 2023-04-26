@@ -8,18 +8,18 @@ class ModoPrincipal(object):
     def atualiza(self, dt):
         self.timer += dt
         if self.timer >= self.time:
-            if self.mode is INICIO:
+            if self.modo is INICIO:
                 self.perseguir()
-            elif self.mode is PERSEGUIR:
+            elif self.modo is PERSEGUIR:
                 self.inicio()
 
     def inicio(self):
-        self.mode = INICIO
+        self.modo = INICIO
         self.time = 7
         self.timer = 0
 
     def perseguir(self):
-        self.mode = PERSEGUIR
+        self.modo = PERSEGUIR
         self.time = 20
         self.timer = 0
 
@@ -29,33 +29,33 @@ class ModeController(object):
         self.timer = 0
         self.time = None
         self.mainmode = ModoPrincipal()
-        self.current = self.mainmode.mode
-        self.entity = entity
+        self.atual = self.mainmode.modo
+        self.andarilho = entity
 
     def atualiza(self, dt):
         self.mainmode.atualiza(dt)
-        if self.current is ALEATORIO:
+        if self.atual is ALEATORIO:
             self.timer += dt
             if self.timer >= self.time:
                 self.time = None
-                self.entity.modoNormal()
-                self.current = self.mainmode.mode
-        elif self.current in [INICIO, PERSEGUIR]:
-            self.current = self.mainmode.mode
+                self.andarilho.modoNormal()
+                self.atual = self.mainmode.modo
+        elif self.atual in [INICIO, PERSEGUIR]:
+            self.atual = self.mainmode.modo
 
-        if self.current is SPAWN:
-            if self.entity.node == self.entity.spawnNode:
-                self.entity.modoNormal()
-                self.current = self.mainmode.mode
+        if self.atual is SPAWN:
+            if self.andarilho.node == self.andarilho.spawnNode:
+                self.andarilho.modoNormal()
+                self.atual = self.mainmode.modo
 
     def setFreightMode(self):
-        if self.current in [INICIO, PERSEGUIR]:
+        if self.atual in [INICIO, PERSEGUIR]:
             self.timer = 0
             self.time = 7
-            self.current = ALEATORIO
-        elif self.current is ALEATORIO:
+            self.atual = ALEATORIO
+        elif self.atual is ALEATORIO:
             self.timer = 0
 
     def setSpawnMode(self):
-        if self.current is ALEATORIO:
-            self.current = SPAWN
+        if self.atual is ALEATORIO:
+            self.atual = SPAWN
