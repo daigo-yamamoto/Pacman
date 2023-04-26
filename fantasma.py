@@ -17,8 +17,8 @@ class Fantasma(Andarilhos):
         self.modo = ModeController(self)
 
     def atualiza(self, dt):
-        self.modo.update(dt)
-        if self.modo.atual is SALVAR:
+        self.modo.atualiza(dt)
+        if self.modo.atual is INICIO:
             self.salvar()
         elif self.modo.atual is PERSEGUIR:
             self.perseguir()
@@ -29,3 +29,26 @@ class Fantasma(Andarilhos):
 
     def perseguir(self):
         self.chegada = self.pacman.posicao
+
+    def startFreight(self):
+        self.modo.defineModoAleatorio()
+        if self.modo.atual == ALEATORIO:
+            self.defineVelocidade(50)
+            self.metodoDirecionamento = self.direcaoAleatoria
+
+    def normalMode(self):
+        self.defineVelocidade(100)
+        self.metodoDirecionamento = self.direcaoChegada
+
+    def spawn(self):
+        self.chegada = self.spawnNode.position
+
+    def defienNoSpawn(self, node):
+        self.spawnNode = node
+
+    def comecaSpawn(self):
+        self.modo.defineModoAleatorio()
+        if self.modo.atual == SPAWN:
+            self.defineVelocidade(150)
+            self.metodoDirecionamento = self.direcaoChegada
+            self.spawn()

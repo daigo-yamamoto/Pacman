@@ -26,6 +26,7 @@ class GameController(object):
         self.pacman = Pacman(self.no.pegaNoInicial())
         self.pontos = GrupoPontos("mapa.txt")
         self.fantasma = Fantasma(self.no.pegaNoInicial(), self.pacman)
+        self.fantasma.defienNoSpawn(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
 
     def atualiza(self):
         dt = self.tempo.tick(30) / 1000.0
@@ -33,6 +34,7 @@ class GameController(object):
         self.fantasma.atualiza(dt)
         self.pontos.atualiza(dt)
         self.checaEventoPontos()
+        self.checaEventoFantasma()
         self.checaEvento()
         self.desenha()
 
@@ -40,6 +42,11 @@ class GameController(object):
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 exit()
+
+    def checaEventoFantasma(self):
+        if self.pacman.collideGhost(self.fantasma):
+            if self.fantasma.modo.atual is ALEATORIO:
+                self.fantasma.comecaSpawn()
 
     def desenha(self):
         self.tela.blit(self.tela_fundo, (0,0))
@@ -50,10 +57,12 @@ class GameController(object):
         pygame.display.update()
 
     def checaEventoPontos(self):
-        pellet = self.pacman.comePonto(self.pontos.lista_pontos)
-        if pellet:
+        ponto = self.pacman.comePonto(self.pontos.lista_pontos)
+        if ponto:
             self.pontos.num_pontos_comidos += 1
-            self.pontos.lista_pontos.remove(pellet)
+            self.pontos.lista_pontos.remove(ponto)
+            if ponto.nome == PONTOSPODER:
+                self.fantasma.startFreight()
 
 if __name__ == "__main__":
     jogo = GameController()

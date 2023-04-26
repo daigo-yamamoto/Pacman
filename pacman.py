@@ -42,9 +42,17 @@ class Pacman(Andarilhos):
 
     def comePonto(self, lista_pontos):
         for ponto in lista_pontos:
-            d = self.posicao - ponto.posicao
-            dQuadrado = d.distanciaQuadrado()
-            rQuadrado = (ponto.raio + self.raio_colisao) ** 2
-            if dQuadrado <= rQuadrado:
+            if self.checaColisao(ponto):
                 return ponto
         return None
+
+    def collideGhost(self, ghost):
+        return self.checaColisao(ghost)
+
+    def checaColisao(self, other):
+        d = self.posicao - other.posicao
+        dSquared = d.distanciaQuadrado()
+        rSquared = (self.raio_colisao + other.raio_colisao) ** 2
+        if dSquared <= rSquared:
+            return True
+        return False
