@@ -6,6 +6,7 @@ from no import GrupoNo
 from pontos import GrupoPontos
 from fantasma import GrupoFantasma
 from fruta import Fruta
+from pausa import Pausa
 
 
 class GameController(object):
@@ -15,6 +16,7 @@ class GameController(object):
         self.tela_fundo = None
         self.tempo = pygame.time.Clock()
         self.fruta = None
+        self.pausa = Pausa(True)
 
     def setTelaFundo(self):
         self.tela_fundo = pygame.surface.Surface(TAMANHO_TELA).convert()
@@ -37,14 +39,18 @@ class GameController(object):
 
     def atualiza(self):
         dt = self.tempo.tick(30) / 1000.0
-        self.pacman.atualiza(dt)
-        self.fantasma.atualiza(dt)
         self.pontos.atualiza(dt)
-        if self.fruta is not None:
-            self.fruta.update(dt)
-        self.checaEventoPontos()
-        self.checaEventoFantasma()
-        self.checkFruitEvents()
+        if not self.pausa.pausado:
+            self.pacman.atualiza(dt)
+            self.fantasma.atualiza(dt)
+            if self.fruta is not None:
+                self.fruta.atualiza(dt)
+            self.checaEventoPontos()
+            self.checaEventoFantasma()
+            self.checkFruitEvents()
+        metodoAposPausa = self.pausa.atualiza(dt)
+        if metodoAposPausa is not None:
+            metodoAposPausa()
         self.checaEvento()
         self.desenha()
 
@@ -62,12 +68,30 @@ class GameController(object):
         for evento in pygame.event.get():
             if evento.type == QUIT:
                 exit()
+            elif evento.type == KEYDOWN:
+                if evento.key == K_SPACE:
+                    self.pausa.setPause(playerPaused=True)
+                    if not self.pausa.pausado:
+                        self.showEntities()
+                    else:
+                        self.hideEntities()
 
     def checaEventoFantasma(self):
         for fantasma in self.fantasma:
             if self.pacman.collideGhost(fantasma):
                 if fantasma.modo.atual is ALEATORIO:
+                    self.pacman.visible = False
+                    fantasma.visible = False
+                    self.pausa.setPause(tempoPausa=1, func=self.showEntities)
                     fantasma.comecaSpawn()
+
+    def showEntities(self):
+        self.pacman.visible = True
+        self.fantasma.mostra()
+
+    def hideEntities(self):
+        self.pacman.visible = False
+        self.fantasma.esconde()
 
     def desenha(self):
         self.tela.blit(self.tela_fundo, (0,0))
