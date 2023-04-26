@@ -3,7 +3,7 @@ from andarilhos import Andarilho
 from constantes import *
 from sprites import FruitSprites
 
-class Fruit(Andarilho):
+class Fruta(Andarilho):
     def __init__(self, node):
         Andarilho.__init__(self, node)
         self.nome = FRUTA

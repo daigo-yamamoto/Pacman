@@ -4,7 +4,7 @@ from constantes import *
 import numpy as np
 
 
-class Pellet(object):
+class Pontos(object):
     def __init__(self, row, column):
         self.nome = PONTOS
         self.position = Vetor2(column * LARGURANO, row * ALTURANO)
@@ -21,9 +21,9 @@ class Pellet(object):
             pygame.draw.circle(screen, self.cor, p.intTupla(), self.radius)
 
 
-class PowerPellet(Pellet):
+class PowerPellet(Pontos):
     def __init__(self, row, column):
-        Pellet.__init__(self, row, column)
+        Pontos.__init__(self, row, column)
         self.nome = PONTOPODER
         self.radius = int(8 * LARGURANO / 16)
         self.points = 50
@@ -53,7 +53,7 @@ class GrupoPontos(object):
         for row in range(data.shape[0]):
             for col in range(data.shape[1]):
                 if data[row][col] in ['.', '+']:
-                    self.pelletList.append(Pellet(row, col))
+                    self.pelletList.append(Pontos(row, col))
                 elif data[row][col] in ['P', 'p']:
                     pp = PowerPellet(row, col)
                     self.pelletList.append(pp)

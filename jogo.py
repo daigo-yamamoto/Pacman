@@ -5,8 +5,8 @@ from pacman import Pacman
 from no import GrupoNo
 from pontos import GrupoPontos
 from fantasma import GrupoFantasma
-from fruta import Fruit
-from pausa import Pause
+from fruta import Fruta
+from pausa import Pausa
 from sprites import LifeSprites
 from sprites import MazeSprites
 
@@ -20,7 +20,7 @@ class GameController(object):
         self.telaFundoFlash = None
         self.tempo = pygame.time.Clock()
         self.fruta = None
-        self.pausa = Pause(True)
+        self.pausa = Pausa(True)
         self.vidas = 5
         self.pontuacao = 0
 
