@@ -22,7 +22,7 @@ class GameController(object):
         self.no = GrupoNo("mapa.txt")
         self.pacman = Pacman(self.no.pegaNoInicial())
         self.pontos = GrupoPontos("mapa.txt")
-        self.fantasma = Fantasma(self.no.pegaNoInicial())
+        self.fantasma = Fantasma(self.no.pegaNoInicial(), self.pacman)
 
     def atualiza(self):
         dt = self.tempo.tick(30) / 1000.0

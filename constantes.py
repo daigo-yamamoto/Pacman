@@ -27,3 +27,9 @@ PACMAN = 0
 PONTOS = 1
 PONTOSPODER = 2
 FANTASMA = 3
+
+# Modos do fantasma
+SALVAR = 0
+PERSEGUIR = 1
+FRETE = 2
+SPAWN = 3
