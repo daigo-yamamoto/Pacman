@@ -43,7 +43,7 @@ class ModeController(object):
             self.atual = self.modoPrincipal.modo
 
         if self.atual is SPAWN:
-            if self.andarilho.node == self.andarilho.spawnNode:
+            if self.andarilho.no == self.andarilho.spawnNode:
                 self.andarilho.normalMode()
                 self.atual = self.modoPrincipal.modo
 

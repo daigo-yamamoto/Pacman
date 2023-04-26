@@ -9,6 +9,7 @@ class Pacman(Andarilhos):
         Andarilhos.__init__(self, no)
         self.nome = PACMAN
         self.cor = AMARELO
+        self.direcao = ESQUERDA
 
     def atualiza(self, dt):
         self.posicao += self.direcoes[self.direcao] * self.velocidade * dt

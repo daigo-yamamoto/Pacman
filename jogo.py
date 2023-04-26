@@ -26,6 +26,10 @@ class GameController(object):
         self.pacman = Pacman(self.no.pegaNoTiles(15,26))
         self.pontos = GrupoPontos("mapa.txt")
         self.fantasma = GrupoFantasma(self.no.pegaNoInicial(), self.pacman)
+        self.fantasma.bafao.setStartNode(self.no.pegaNoTiles(2 + 11.5, 0 + 14))
+        self.fantasma.alonso.setStartNode(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
+        self.fantasma.rogerio.setStartNode(self.no.pegaNoTiles(0 + 11.5, 3 + 14))
+        self.fantasma.manga.setStartNode(self.no.pegaNoTiles(4 + 11.5, 3 + 14))
         self.fantasma.defineNoSpawn(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
 
     def atualiza(self):

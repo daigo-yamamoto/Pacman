@@ -14,12 +14,16 @@ class Andarilhos(object):
         self.raio = 10
         self.raio_colisao = 5
         self.cor = BRANCO
-        self.no = no
-        self.definePosicao()
-        self.alvo = no
         self.visivel = True
         self.chegada = None
         self.metodoDirecionamento = self.direcaoAleatoria
+        self.setStartNode(no)
+
+    def setStartNode(self, no):
+        self.no = no
+        self.no_inicial = no
+        self.alvo = no
+        self.definePosicao()
 
     def definePosicao(self):
         self.posicao = self.no.posicao.copia()
@@ -101,7 +105,7 @@ class Andarilhos(object):
             self.definePosicao()
 
     def reset(self):
-        self.setStartNode(self.startNode)
+        self.setStartNode(self.no_inicial)
         self.direction = PARADO
         self.speed = 100
         self.visivel = True
