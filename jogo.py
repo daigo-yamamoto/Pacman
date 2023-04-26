@@ -36,7 +36,7 @@ class GameController(object):
         self.telaFundoNorm.fill(PRETO)
         self.telaFundoFlash = pygame.surface.Surface(TAMANHO_TELA).convert()
         self.telaFundoFlash.fill(PRETO)
-        self.telaFundoNorm = self.mazesprites.constructBackground(self.telaFundoNorm, 0)
+        self.telaFundoNorm = self.mazesprites.constructBackground(self.telaFundoNorm, 3)
         self.telaFundoFlash = self.mazesprites.constructBackground(self.telaFundoFlash, 5)
         self.flashBG = False
         self.telaFundo = self.telaFundoNorm
@@ -52,18 +52,18 @@ class GameController(object):
         self.pontos = GrupoPontos("mapa.txt")
 
         self.fantasmas = GrupoFantasma(self.no.pegaNoInicial(), self.pacman)
-        self.fantasmas.bafao.setStartNode(self.no.pegaNoTiles(2 + 11.5, 0 + 14))
-        self.fantasmas.alonso.setStartNode(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
-        self.fantasmas.rogerio.setStartNode(self.no.pegaNoTiles(0 + 11.5, 3 + 14))
-        self.fantasmas.manga.setStartNode(self.no.pegaNoTiles(4 + 11.5, 3 + 14))
+        self.fantasmas.bafao.selecionaNoInicial(self.no.pegaNoTiles(2 + 11.5, 0 + 14))
+        self.fantasmas.alonso.selecionaNoInicial(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
+        self.fantasmas.rogerio.selecionaNoInicial(self.no.pegaNoTiles(0 + 11.5, 3 + 14))
+        self.fantasmas.manga.selecionaNoInicial(self.no.pegaNoTiles(4 + 11.5, 3 + 14))
         self.fantasmas.defineNoSpawn(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
 
         self.no.denyHomeAccess(self.pacman)
         self.no.denyHomeAccessList(self.fantasmas)
         self.no.denyAccessList(2 + 11.5, 3 + 14, ESQUERDA, self.fantasmas)
         self.no.denyAccessList(2 + 11.5, 3 + 14, DIREITA, self.fantasmas)
-        self.fantasmas.rogerio.startNode.denyAccess(DIREITA, self.fantasmas.rogerio)
-        self.fantasmas.manga.startNode.denyAccess(ESQUERDA, self.fantasmas.manga)
+        self.fantasmas.rogerio.startNode.rejeitaAcesso(DIREITA, self.fantasmas.rogerio)
+        self.fantasmas.manga.startNode.rejeitaAcesso(ESQUERDA, self.fantasmas.manga)
         self.no.denyAccessList(12, 14, CIMA, self.fantasmas)
         self.no.denyAccessList(15, 14, CIMA, self.fantasmas)
         self.no.denyAccessList(12, 26, CIMA, self.fantasmas)
@@ -112,15 +112,15 @@ class GameController(object):
                             self.mostraAndarilhos()
 
     def checaEventoPontos(self):
-        pontos = self.pacman.comePontos(self.pontos.pelletList)
+        pontos = self.pacman.comePontos(self.pontos.listaPontos)
         if pontos:
-            self.pontos.numEaten += 1
+            self.pontos.numPontosComidos += 1
             self.atualizaPontos(pontos.pontos)
-            if self.pontos.numEaten == 30:
-                self.fantasmas.rogerio.startNode.allowAccess(DIREITA, self.fantasmas.rogerio)
-            if self.pontos.numEaten == 70:
-                self.fantasmas.manga.startNode.allowAccess(ESQUERDA, self.fantasmas.manga)
-            self.pontos.pelletList.remove(pontos)
+            if self.pontos.numPontosComidos == 30:
+                self.fantasmas.rogerio.startNode.aceitaAcesso(DIREITA, self.fantasmas.rogerio)
+            if self.pontos.numPontosComidos == 70:
+                self.fantasmas.manga.startNode.aceitaAcesso(ESQUERDA, self.fantasmas.manga)
+            self.pontos.listaPontos.remove(pontos)
             if pontos.nome == PONTOPODER:
                 self.fantasmas.iniciaAleatorio()
             if self.pontos.isEmpty():
@@ -128,17 +128,17 @@ class GameController(object):
                 self.escondeAndarilhos()
 
     def checaEventoFantasma(self):
-        for ghost in self.fantasmas:
-            if self.pacman.colideFantasma(ghost):
-                if ghost.modo.atual is ALEATORIO:
-                    self.pacman.visible = False
-                    ghost.visible = False
-                    self.atualizaPontos(ghost.pontos)
+        for fantasma in self.fantasmas:
+            if self.pacman.colideFantasma(fantasma):
+                if fantasma.modo.atual is ALEATORIO:
+                    self.pacman.visivel = False
+                    fantasma.visivel = False
+                    self.atualizaPontos(fantasma.pontos)
                     self.fantasmas.atualizaPontos()
                     self.pausa.setPause(pauseTime=1, func=self.mostraAndarilhos)
-                    ghost.startSpawn()
-                    self.no.allowHomeAccess(ghost)
-                elif ghost.modo.atual is not SPAWN:
+                    fantasma.startSpawn()
+                    self.no.allowHomeAccess(fantasma)
+                elif fantasma.modo.atual is not SPAWN:
                     if self.pacman.vivo:
                         self.vidas -= 1
                         self.lifesprites.removeImage()
@@ -148,11 +148,11 @@ class GameController(object):
                             self.pausa.setPause(pauseTime=3, func=self.restartGame)
 
     def mostraAndarilhos(self):
-        self.pacman.visible = True
+        self.pacman.visivel = True
         self.fantasmas.mostra()
 
     def escondeAndarilhos(self):
-        self.pacman.visible = False
+        self.pacman.visivel = False
         self.fantasmas.esconde()
 
     def restartGame(self):

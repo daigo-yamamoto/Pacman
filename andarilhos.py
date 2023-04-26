@@ -15,18 +15,18 @@ class Andarilho(object):
         self.radius = 10
         self.collideRadius = 5
         self.cor = BRANCO
-        self.visible = True
+        self.visivel = True
         self.disablePortal = False
         self.chegada = None
         self.metodoDirecionamento = self.randomDirection
-        self.setStartNode(node)
+        self.selecionaNoInicial(node)
         self.image = None
 
     def setPosition(self):
-        self.position = self.node.position.copia()
+        self.posicao = self.node.posicao.copia()
 
     def atualiza(self, dt):
-        self.position += self.directions[self.direcao] * self.speed * dt
+        self.posicao += self.directions[self.direcao] * self.speed * dt
 
         if self.overshotTarget():
             self.node = self.target
@@ -45,7 +45,7 @@ class Andarilho(object):
 
     def validDirection(self, direction):
         if direction is not PARADO:
-            if self.nome in self.node.access[direction]:
+            if self.nome in self.node.acesso[direction]:
                 if self.node.neighbors[direction] is not None:
                     return True
         return False
@@ -57,8 +57,8 @@ class Andarilho(object):
 
     def overshotTarget(self):
         if self.target is not None:
-            vec1 = self.target.position - self.node.position
-            vec2 = self.position - self.node.position
+            vec1 = self.target.posicao - self.node.posicao
+            vec2 = self.posicao - self.node.posicao
             node2Target = vec1.moduloQuadrado()
             node2Self = vec2.moduloQuadrado()
             return node2Self >= node2Target
@@ -92,12 +92,12 @@ class Andarilho(object):
     def direcaoChegada(self, directions):
         distances = []
         for direction in directions:
-            vec = self.node.position + self.directions[direction] * LARGURANO - self.chegada
+            vec = self.node.posicao + self.directions[direction] * LARGURANO - self.chegada
             distances.append(vec.moduloQuadrado())
         index = distances.index(min(distances))
         return directions[index]
 
-    def setStartNode(self, node):
+    def selecionaNoInicial(self, node):
         self.node = node
         self.startNode = node
         self.target = node
@@ -106,23 +106,23 @@ class Andarilho(object):
     def setBetweenNodes(self, direction):
         if self.node.neighbors[direction] is not None:
             self.target = self.node.neighbors[direction]
-            self.position = (self.node.position + self.target.position) / 2.0
+            self.posicao = (self.node.posicao + self.target.posicao) / 2.0
 
     def reset(self):
-        self.setStartNode(self.startNode)
+        self.selecionaNoInicial(self.startNode)
         self.direcao = PARADO
         self.speed = 100
-        self.visible = True
+        self.visivel = True
 
     def setSpeed(self, speed):
         self.speed = speed * LARGURANO / 16
 
     def render(self, screen):
-        if self.visible:
+        if self.visivel:
             if self.image is not None:
                 adjust = Vetor2(LARGURANO, ALTURANO) / 2
-                p = self.position - adjust
+                p = self.posicao - adjust
                 screen.blit(self.image, p.tupla())
             else:
-                p = self.position.intTupla()
+                p = self.posicao.intTupla()
                 pygame.draw.circle(screen, self.cor, p, self.radius)

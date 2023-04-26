@@ -5,28 +5,28 @@ import numpy as np
 
 class Node(object):
     def __init__(self, x, y):
-        self.position = Vetor2(x, y)
+        self.posicao = Vetor2(x, y)
         self.neighbors = {CIMA:None, BAIXO:None, ESQUERDA:None, DIREITA:None, PORTAL:None}
-        self.access = {CIMA:[PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
+        self.acesso = {CIMA:[PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
                        BAIXO:[PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
                        ESQUERDA:[PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA],
                        DIREITA:[PACMAN, BAFAO, ALONSO, ROGERIO, MANGA, FRUTA]}
 
-    def denyAccess(self, direction, entity):
-        if entity.nome in self.access[direction]:
-            self.access[direction].remove(entity.nome)
+    def rejeitaAcesso(self, direcao, andarilho):
+        if andarilho.nome in self.acesso[direcao]:
+            self.acesso[direcao].remove(andarilho.nome)
 
-    def allowAccess(self, direction, entity):
-        if entity.nome not in self.access[direction]:
-            self.access[direction].append(entity.nome)
+    def aceitaAcesso(self, direcao, andarilho):
+        if andarilho.nome not in self.acesso[direcao]:
+            self.acesso[direcao].append(andarilho.nome)
 
     def render(self, screen):
         for n in self.neighbors.keys():
             if self.neighbors[n] is not None:
-                line_start = self.position.tupla()
-                line_end = self.neighbors[n].position.tupla()
+                line_start = self.posicao.tupla()
+                line_end = self.neighbors[n].posicao.tupla()
                 pygame.draw.line(screen, BRANCO, line_start, line_end, 4)
-                pygame.draw.circle(screen, VERMELHO, self.position.intTupla(), 12)
+                pygame.draw.circle(screen, VERMELHO, self.posicao.intTupla(), 12)
 
 
 class GrupoNo(object):
@@ -127,29 +127,29 @@ class GrupoNo(object):
             return self.nodesLUT[(x, y)]
         return None
 
-    def denyAccess(self, col, row, direction, entity):
+    def rejeitaAcesso(self, col, row, direction, entity):
         node = self.pegaNoTiles(col, row)
         if node is not None:
-            node.denyAccess(direction, entity)
+            node.rejeitaAcesso(direction, entity)
 
-    def allowAccess(self, col, row, direction, entity):
+    def aceitaAcesso(self, col, row, direction, entity):
         node = self.pegaNoTiles(col, row)
         if node is not None:
-            node.allowAccess(direction, entity)
+            node.aceitaAcesso(direction, entity)
 
     def denyAccessList(self, col, row, direction, entities):
         for entity in entities:
-            self.denyAccess(col, row, direction, entity)
+            self.rejeitaAcesso(col, row, direction, entity)
 
     def allowAccessList(self, col, row, direction, entities):
         for entity in entities:
-            self.allowAccess(col, row, direction, entity)
+            self.aceitaAcesso(col, row, direction, entity)
 
     def denyHomeAccess(self, entity):
-        self.nodesLUT[self.homekey].denyAccess(BAIXO, entity)
+        self.nodesLUT[self.homekey].rejeitaAcesso(BAIXO, entity)
 
     def allowHomeAccess(self, entity):
-        self.nodesLUT[self.homekey].allowAccess(BAIXO, entity)
+        self.nodesLUT[self.homekey].aceitaAcesso(BAIXO, entity)
 
     def denyHomeAccessList(self, entities):
         for entity in entities:

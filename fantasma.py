@@ -36,10 +36,10 @@ class Fantasma(Andarilho):
         self.chegada = Vetor2()
 
     def perseguir(self):
-        self.chegada = self.pacman.position
+        self.chegada = self.pacman.posicao
 
     def spawn(self):
-        self.chegada = self.spawnNode.position
+        self.chegada = self.spawnNode.posicao
 
     def setSpawnNode(self, node):
         self.spawnNode = node
@@ -60,7 +60,7 @@ class Fantasma(Andarilho):
     def modoNormal(self):
         self.setSpeed(100)
         self.metodoDirecionamento = self.direcaoChegada
-        self.homeNode.denyAccess(BAIXO, self)
+        self.homeNode.rejeitaAcesso(BAIXO, self)
 
 
 
@@ -84,7 +84,7 @@ class Alonso(Fantasma):
         self.goal = Vetor2(LARGURANO * NUMCOLUNA, 0)
 
     def perseguir(self):
-        self.goal = self.pacman.position + self.pacman.directions[self.pacman.direcao] * LARGURANO * 4
+        self.goal = self.pacman.posicao + self.pacman.directions[self.pacman.direcao] * LARGURANO * 4
 
 
 class Rogerio(Fantasma):
@@ -98,9 +98,9 @@ class Rogerio(Fantasma):
         self.goal = Vetor2(LARGURANO * NUMCOLUNA, ALTURANO * NUMLINHA)
 
     def perseguir(self):
-        vec1 = self.pacman.position + self.pacman.directions[self.pacman.direcao] * LARGURANO * 2
-        vec2 = (vec1 - self.bafao.position) * 2
-        self.goal = self.bafao.position + vec2
+        vec1 = self.pacman.posicao + self.pacman.directions[self.pacman.direcao] * LARGURANO * 2
+        vec2 = (vec1 - self.bafao.posicao) * 2
+        self.goal = self.bafao.posicao + vec2
 
 
 class Manga(Fantasma):
@@ -114,12 +114,12 @@ class Manga(Fantasma):
         self.goal = Vetor2(0, ALTURANO * NUMLINHA)
 
     def perseguir(self):
-        d = self.pacman.position - self.position
+        d = self.pacman.posicao - self.posicao
         ds = d.moduloQuadrado()
         if ds <= (LARGURANO * 8)**2:
             self.inicio()
         else:
-            self.goal = self.pacman.position + self.pacman.directions[self.pacman.direcao] * LARGURANO * 4
+            self.goal = self.pacman.posicao + self.pacman.directions[self.pacman.direcao] * LARGURANO * 4
 
 
 class GrupoFantasma(object):
@@ -156,11 +156,11 @@ class GrupoFantasma(object):
 
     def esconde(self):
         for ghost in self:
-            ghost.visible = False
+            ghost.visivel = False
 
     def mostra(self):
         for ghost in self:
-            ghost.visible = True
+            ghost.visivel = True
 
     def reset(self):
         for ghost in self:

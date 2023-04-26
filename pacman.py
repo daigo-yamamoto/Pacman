@@ -30,7 +30,7 @@ class Pacman(Andarilho):
 
     def atualiza(self, dt):
         self.sprites.update(dt)
-        self.position += self.directions[self.direcao] * self.speed * dt
+        self.posicao += self.directions[self.direcao] * self.speed * dt
         direction = self.pegaChaveValida()
         if self.overshotTarget():
             self.node = self.target
@@ -50,30 +50,30 @@ class Pacman(Andarilho):
                 self.reverseDirection()
 
     def pegaChaveValida(self):
-        key_pressed = pygame.key.get_pressed()
-        if key_pressed[K_UP]:
+        teclaApertada = pygame.key.get_pressed()
+        if teclaApertada[K_UP]:
             return CIMA
-        if key_pressed[K_DOWN]:
+        if teclaApertada[K_DOWN]:
             return BAIXO
-        if key_pressed[K_LEFT]:
+        if teclaApertada[K_LEFT]:
             return ESQUERDA
-        if key_pressed[K_RIGHT]:
+        if teclaApertada[K_RIGHT]:
             return DIREITA
         return PARADO
 
-    def comePontos(self, pelletList):
-        for pellet in pelletList:
-            if self.checaColisao(pellet):
-                return pellet
+    def comePontos(self, listaPontos):
+        for ponto in listaPontos:
+            if self.checaColisao(ponto):
+                return ponto
         return None
 
-    def colideFantasma(self, ghost):
-        return self.checaColisao(ghost)
+    def colideFantasma(self, fantasma):
+        return self.checaColisao(fantasma)
 
-    def checaColisao(self, other):
-        d = self.position - other.position
+    def checaColisao(self, outro):
+        d = self.posicao - outro.posicao
         dSquared = d.moduloQuadrado()
-        rSquared = (self.collideRadius + other.collideRadius) ** 2
+        rSquared = (self.collideRadius + outro.collideRadius) ** 2
         if dSquared <= rSquared:
             return True
         return False
