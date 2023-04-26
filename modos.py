@@ -25,12 +25,12 @@ class ModoPrincipal(object):
 
 
 class ModeController(object):
-    def __init__(self, entity):
+    def __init__(self, andarilho):
         self.timer = 0
         self.time = None
         self.mainmode = ModoPrincipal()
         self.atual = self.mainmode.modo
-        self.andarilho = entity
+        self.andarilho = andarilho
 
     def atualiza(self, dt):
         self.mainmode.atualiza(dt)
@@ -44,7 +44,7 @@ class ModeController(object):
             self.atual = self.mainmode.modo
 
         if self.atual is SPAWN:
-            if self.andarilho.node == self.andarilho.spawnNode:
+            if self.andarilho.no == self.andarilho.NoSpawn:
                 self.andarilho.modoNormal()
                 self.atual = self.mainmode.modo
 

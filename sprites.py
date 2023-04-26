@@ -25,10 +25,10 @@ class Spritesheet(object):
 
 
 class PacmanSprites(Spritesheet):
-    def __init__(self, entity):
+    def __init__(self, andarilho):
         Spritesheet.__init__(self)
-        self.entity = entity
-        self.entity.image = self.getStartImage()
+        self.andarilho = andarilho
+        self.andarilho.image = self.getStartImage()
         self.animations = {}
         self.defineAnimations()
         self.stopimage = (8, 0)
@@ -41,23 +41,23 @@ class PacmanSprites(Spritesheet):
         self.animations[MORTO] = Animacao(((24, 4), (26, 4), (28, 4), (30, 4), (32, 4)), velocidade=1, loop=False)
 
     def update(self, dt):
-        if self.entity.vivo == True:
-            if self.entity.direcao == ESQUERDA:
-                self.entity.image = self.getImage(*self.animations[ESQUERDA].atualiza(dt))
+        if self.andarilho.vivo == True:
+            if self.andarilho.direcao == ESQUERDA:
+                self.andarilho.image = self.getImage(*self.animations[ESQUERDA].atualiza(dt))
                 self.stopimage = (2, 0)
-            elif self.entity.direcao == DIREITA:
-                self.entity.image = self.getImage(*self.animations[DIREITA].atualiza(dt))
+            elif self.andarilho.direcao == DIREITA:
+                self.andarilho.image = self.getImage(*self.animations[DIREITA].atualiza(dt))
                 self.stopimage = (28, 0)
-            elif self.entity.direcao == BAIXO:
-                self.entity.image = self.getImage(*self.animations[BAIXO].atualiza(dt))
+            elif self.andarilho.direcao == BAIXO:
+                self.andarilho.image = self.getImage(*self.animations[BAIXO].atualiza(dt))
                 self.stopimage = (30, 2)
-            elif self.entity.direcao == CIMA:
-                self.entity.image = self.getImage(*self.animations[CIMA].atualiza(dt))
+            elif self.andarilho.direcao == CIMA:
+                self.andarilho.image = self.getImage(*self.animations[CIMA].atualiza(dt))
                 self.stopimage = (8, 2)
-            elif self.entity.direcao == PARADO:
-                self.entity.image = self.getImage(*self.stopimage)
+            elif self.andarilho.direcao == PARADO:
+                self.andarilho.image = self.getImage(*self.stopimage)
         else:
-            self.entity.image = self.getImage(*self.animations[MORTO].atualiza(dt))
+            self.andarilho.image = self.getImage(*self.animations[MORTO].atualiza(dt))
 
     def reset(self):
         for key in list(self.animations.keys()):
@@ -71,48 +71,48 @@ class PacmanSprites(Spritesheet):
 
 
 class GhostSprites(Spritesheet):
-    def __init__(self, entity):
+    def __init__(self, andarilho):
         Spritesheet.__init__(self)
         self.x = {BAFAO: 0, ALONSO: 2, ROGERIO: 4, MANGA: 6}
-        self.entity = entity
-        self.entity.image = self.getStartImage()
+        self.andarilho = andarilho
+        self.andarilho.image = self.getStartImage()
 
     def update(self, dt):
-        x = self.x[self.entity.nome]
-        if self.entity.modo.atual in [INICIO, PERSEGUIR]:
-            if self.entity.direcao == ESQUERDA:
-                self.entity.image = self.getImage(x, 8)
-            elif self.entity.direcao == DIREITA:
-                self.entity.image = self.getImage(x, 10)
-            elif self.entity.direcao == BAIXO:
-                self.entity.image = self.getImage(x, 6)
-            elif self.entity.direcao == CIMA:
-                self.entity.image = self.getImage(x, 4)
-        elif self.entity.modo.atual == ALEATORIO:
-            self.entity.image = self.getImage(10, 4)
-        elif self.entity.modo.atual == SPAWN:
-            if self.entity.direcao == ESQUERDA:
-                self.entity.image = self.getImage(8, 8)
-            elif self.entity.direcao == DIREITA:
-                self.entity.image = self.getImage(8, 10)
-            elif self.entity.direcao == BAIXO:
-                self.entity.image = self.getImage(8, 6)
-            elif self.entity.direcao == CIMA:
-                self.entity.image = self.getImage(8, 4)
+        x = self.x[self.andarilho.nome]
+        if self.andarilho.modo.atual in [INICIO, PERSEGUIR]:
+            if self.andarilho.direcao == ESQUERDA:
+                self.andarilho.image = self.getImage(x, 8)
+            elif self.andarilho.direcao == DIREITA:
+                self.andarilho.image = self.getImage(x, 10)
+            elif self.andarilho.direcao == BAIXO:
+                self.andarilho.image = self.getImage(x, 6)
+            elif self.andarilho.direcao == CIMA:
+                self.andarilho.image = self.getImage(x, 4)
+        elif self.andarilho.modo.atual == ALEATORIO:
+            self.andarilho.image = self.getImage(10, 4)
+        elif self.andarilho.modo.atual == SPAWN:
+            if self.andarilho.direcao == ESQUERDA:
+                self.andarilho.image = self.getImage(8, 8)
+            elif self.andarilho.direcao == DIREITA:
+                self.andarilho.image = self.getImage(8, 10)
+            elif self.andarilho.direcao == BAIXO:
+                self.andarilho.image = self.getImage(8, 6)
+            elif self.andarilho.direcao == CIMA:
+                self.andarilho.image = self.getImage(8, 4)
 
     def getStartImage(self):
-        return self.getImage(self.x[self.entity.nome], 4)
+        return self.getImage(self.x[self.andarilho.nome], 4)
 
     def getImage(self, x, y):
         return Spritesheet.getImage(self, x, y, 2 * LARGURANO, 2 * ALTURANO)
 
 
 class FruitSprites(Spritesheet):
-    def __init__(self, entity, level):
+    def __init__(self, andarilho, level):
         Spritesheet.__init__(self)
-        self.entity = entity
+        self.andarilho = andarilho
         self.fruits = {0: (16, 8), 1: (18, 8), 2: (20, 8), 3: (16, 10), 4: (18, 10), 5: (20, 10)}
-        self.entity.image = self.getStartImage(level % len(self.fruits))
+        self.andarilho.image = self.getStartImage(level % len(self.fruits))
 
     def getStartImage(self, key):
         return self.getImage(*self.fruits[key])
@@ -152,17 +152,17 @@ class MazeSprites(Spritesheet):
         return np.loadtxt(mazefile, dtype='<U1')
 
     def constructBackground(self, background, y):
-        for row in list(range(self.data.shape[0])):
+        for linha in list(range(self.data.shape[0])):
             for col in list(range(self.data.shape[1])):
-                if self.data[row][col].isdigit():
-                    x = int(self.data[row][col]) + 12
+                if self.data[linha][col].isdigit():
+                    x = int(self.data[linha][col]) + 12
                     sprite = self.getImage(x, y)
-                    rotval = int(self.rotdata[row][col])
+                    rotval = int(self.rotdata[linha][col])
                     sprite = self.rotate(sprite, rotval)
-                    background.blit(sprite, (col * LARGURANO, row * ALTURANO))
-                elif self.data[row][col] == '=':
+                    background.blit(sprite, (col * LARGURANO, linha * ALTURANO))
+                elif self.data[linha][col] == '=':
                     sprite = self.getImage(10, 8)
-                    background.blit(sprite, (col * LARGURANO, row * ALTURANO))
+                    background.blit(sprite, (col * LARGURANO, linha * ALTURANO))
 
         return background
 

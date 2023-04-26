@@ -6,7 +6,7 @@ from random import randint
 
 
 class Andarilho(object):
-    def __init__(self, node):
+    def __init__(self, no):
         self.nome = None
         self.directions = {CIMA: Vetor2(0, -1), BAIXO: Vetor2(0, 1),
                            ESQUERDA: Vetor2(-1, 0), DIREITA: Vetor2(1, 0), PARADO: Vetor2()}
@@ -19,24 +19,24 @@ class Andarilho(object):
         self.disablePortal = False
         self.chegada = None
         self.metodoDirecionamento = self.randomDirection
-        self.selecionaNoInicial(node)
+        self.selecionaNoInicial(no)
         self.image = None
 
     def setPosition(self):
-        self.posicao = self.node.posicao.copia()
+        self.posicao = self.no.posicao.copia()
 
     def atualiza(self, dt):
         self.posicao += self.directions[self.direcao] * self.speed * dt
 
         if self.overshotTarget():
-            self.node = self.target
+            self.no = self.target
             directions = self.validDirections()
             direction = self.metodoDirecionamento(directions)
             if not self.disablePortal:
-                if self.node.neighbors[PORTAL] is not None:
-                    self.node = self.node.neighbors[PORTAL]
+                if self.no.neighbors[PORTAL] is not None:
+                    self.no = self.no.neighbors[PORTAL]
             self.target = self.getNewTarget(direction)
-            if self.target is not self.node:
+            if self.target is not self.no:
                 self.direcao = direction
             else:
                 self.target = self.getNewTarget(self.direcao)
@@ -45,20 +45,20 @@ class Andarilho(object):
 
     def validDirection(self, direction):
         if direction is not PARADO:
-            if self.nome in self.node.acesso[direction]:
-                if self.node.neighbors[direction] is not None:
+            if self.nome in self.no.acesso[direction]:
+                if self.no.neighbors[direction] is not None:
                     return True
         return False
 
     def getNewTarget(self, direction):
         if self.validDirection(direction):
-            return self.node.neighbors[direction]
-        return self.node
+            return self.no.neighbors[direction]
+        return self.no
 
     def overshotTarget(self):
         if self.target is not None:
-            vec1 = self.target.posicao - self.node.posicao
-            vec2 = self.posicao - self.node.posicao
+            vec1 = self.target.posicao - self.no.posicao
+            vec2 = self.posicao - self.no.posicao
             node2Target = vec1.moduloQuadrado()
             node2Self = vec2.moduloQuadrado()
             return node2Self >= node2Target
@@ -66,8 +66,8 @@ class Andarilho(object):
 
     def reverseDirection(self):
         self.direcao *= -1
-        temp = self.node
-        self.node = self.target
+        temp = self.no
+        self.no = self.target
         self.target = temp
 
     def oppositeDirection(self, direction):
@@ -92,21 +92,21 @@ class Andarilho(object):
     def direcaoChegada(self, directions):
         distances = []
         for direction in directions:
-            vec = self.node.posicao + self.directions[direction] * LARGURANO - self.chegada
+            vec = self.no.posicao + self.directions[direction] * LARGURANO - self.chegada
             distances.append(vec.moduloQuadrado())
         index = distances.index(min(distances))
         return directions[index]
 
-    def selecionaNoInicial(self, node):
-        self.node = node
-        self.startNode = node
-        self.target = node
+    def selecionaNoInicial(self, no):
+        self.no = no
+        self.startNode = no
+        self.target = no
         self.setPosition()
 
     def setBetweenNodes(self, direction):
-        if self.node.neighbors[direction] is not None:
-            self.target = self.node.neighbors[direction]
-            self.posicao = (self.node.posicao + self.target.posicao) / 2.0
+        if self.no.neighbors[direction] is not None:
+            self.target = self.no.neighbors[direction]
+            self.posicao = (self.no.posicao + self.target.posicao) / 2.0
 
     def reset(self):
         self.selecionaNoInicial(self.startNode)

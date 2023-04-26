@@ -21,7 +21,7 @@ class GameController(object):
         self.tempo = pygame.time.Clock()
         self.fruta = None
         self.pausa = Pausa(True)
-        self.vidas = 5
+        self.vidas = 1
         self.pontuacao = 0
 
         self.lifesprites = LifeSprites(self.vidas)
@@ -29,7 +29,7 @@ class GameController(object):
         self.flashTime = 0.2
         self.flashTimer = 0
         self.fruitCaptured = []
-        self.fruitNode = None
+        self.NoFruta = None
 
     def definePlanoFundo(self):
         self.telaFundoNorm = pygame.surface.Surface(TAMANHO_TELA).convert()
@@ -41,7 +41,7 @@ class GameController(object):
         self.flashBG = False
         self.telaFundo = self.telaFundoNorm
 
-    def startGame(self):
+    def ImiciaJogo(self):
         self.mazesprites = MazeSprites("mapa.txt", "mapa_rotacionado.txt")
         self.definePlanoFundo()
         self.no = GrupoNo("mapa.txt")
@@ -58,16 +58,16 @@ class GameController(object):
         self.fantasmas.manga.selecionaNoInicial(self.no.pegaNoTiles(4 + 11.5, 3 + 14))
         self.fantasmas.defineNoSpawn(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
 
-        self.no.denyHomeAccess(self.pacman)
-        self.no.denyHomeAccessList(self.fantasmas)
-        self.no.denyAccessList(2 + 11.5, 3 + 14, ESQUERDA, self.fantasmas)
-        self.no.denyAccessList(2 + 11.5, 3 + 14, DIREITA, self.fantasmas)
+        self.no.rejeitaAcessoCasa(self.pacman)
+        self.no.listaAcessoRejeitadoCasa(self.fantasmas)
+        self.no.listaAcessoRejeitado(2 + 11.5, 3 + 14, ESQUERDA, self.fantasmas)
+        self.no.listaAcessoRejeitado(2 + 11.5, 3 + 14, DIREITA, self.fantasmas)
         self.fantasmas.rogerio.startNode.rejeitaAcesso(DIREITA, self.fantasmas.rogerio)
         self.fantasmas.manga.startNode.rejeitaAcesso(ESQUERDA, self.fantasmas.manga)
-        self.no.denyAccessList(12, 14, CIMA, self.fantasmas)
-        self.no.denyAccessList(15, 14, CIMA, self.fantasmas)
-        self.no.denyAccessList(12, 26, CIMA, self.fantasmas)
-        self.no.denyAccessList(15, 26, CIMA, self.fantasmas)
+        self.no.listaAcessoRejeitado(12, 14, CIMA, self.fantasmas)
+        self.no.listaAcessoRejeitado(15, 14, CIMA, self.fantasmas)
+        self.no.listaAcessoRejeitado(12, 26, CIMA, self.fantasmas)
+        self.no.listaAcessoRejeitado(15, 26, CIMA, self.fantasmas)
 
     def atualiza(self):
         dt = self.tempo.tick(30) / 1000.0
@@ -136,8 +136,8 @@ class GameController(object):
                     self.atualizaPontos(fantasma.pontos)
                     self.fantasmas.atualizaPontos()
                     self.pausa.setPause(pauseTime=1, func=self.mostraAndarilhos)
-                    fantasma.startSpawn()
-                    self.no.allowHomeAccess(fantasma)
+                    fantasma.comecaSpawn()
+                    self.no.aceitaAcessoCasa(fantasma)
                 elif fantasma.modo.atual is not SPAWN:
                     if self.pacman.vivo:
                         self.vidas -= 1
@@ -159,7 +159,7 @@ class GameController(object):
         self.vidas = 5
         self.pausa.paused = True
         self.fruta = None
-        self.startGame()
+        self.ImiciaJogo()
         self.pontuacao = 0
 
         self.lifesprites.resetLives(self.vidas)
@@ -191,6 +191,6 @@ class GameController(object):
 
 if __name__ == "__main__":
     game = GameController()
-    game.startGame()
+    game.ImiciaJogo()
     while True:
         game.atualiza()

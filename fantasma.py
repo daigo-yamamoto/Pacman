@@ -16,7 +16,7 @@ class Fantasma(Andarilho):
         self.pacman = pacman
         self.modo = ModeController(self)
         self.bafao = bafao
-        self.homeNode = no
+        self.NoCasa = no
 
     def reset(self):
         Andarilho.reset(self)
@@ -39,12 +39,12 @@ class Fantasma(Andarilho):
         self.chegada = self.pacman.posicao
 
     def spawn(self):
-        self.chegada = self.spawnNode.posicao
+        self.chegada = self.NoSpawn.posicao
 
-    def setSpawnNode(self, node):
-        self.spawnNode = node
+    def defineNoSpawn(self, no):
+        self.NoSpawn = no
 
-    def startSpawn(self):
+    def comecaSpawn(self):
         self.modo.setSpawnMode()
         if self.modo.atual == SPAWN:
             self.setSpeed(150)
@@ -60,7 +60,7 @@ class Fantasma(Andarilho):
     def modoNormal(self):
         self.setSpeed(100)
         self.metodoDirecionamento = self.direcaoChegada
-        self.homeNode.rejeitaAcesso(BAIXO, self)
+        self.NoCasa.rejeitaAcesso(BAIXO, self)
 
 
 
@@ -144,7 +144,7 @@ class GrupoFantasma(object):
 
     def defineNoSpawn(self, node):
         for ghost in self:
-            ghost.setSpawnNode(node)
+            ghost.defineNoSpawn(node)
 
     def atualizaPontos(self):
         for ghost in self:

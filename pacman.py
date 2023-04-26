@@ -7,8 +7,8 @@ from sprites import PacmanSprites
 
 
 class Pacman(Andarilho):
-    def __init__(self, node):
-        Andarilho.__init__(self, node)
+    def __init__(self, no):
+        Andarilho.__init__(self, no)
         self.nome = PACMAN
         self.cor = AMARELO
         self.direcao = ESQUERDA
@@ -33,16 +33,16 @@ class Pacman(Andarilho):
         self.posicao += self.directions[self.direcao] * self.speed * dt
         direction = self.pegaChaveValida()
         if self.overshotTarget():
-            self.node = self.target
-            if self.node.neighbors[PORTAL] is not None:
-                self.node = self.node.neighbors[PORTAL]
+            self.no = self.target
+            if self.no.neighbors[PORTAL] is not None:
+                self.no = self.no.neighbors[PORTAL]
             self.target = self.getNewTarget(direction)
-            if self.target is not self.node:
+            if self.target is not self.no:
                 self.direcao = direction
             else:
                 self.target = self.getNewTarget(self.direcao)
 
-            if self.target is self.node:
+            if self.target is self.no:
                 self.direcao = PARADO
             self.setPosition()
         else:

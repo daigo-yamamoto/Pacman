@@ -4,8 +4,8 @@ from constantes import *
 from sprites import FruitSprites
 
 class Fruta(Andarilho):
-    def __init__(self, node):
-        Andarilho.__init__(self, node)
+    def __init__(self, no):
+        Andarilho.__init__(self, no)
         self.nome = FRUTA
         self.cor = VERDE
         self.lifespan = 5

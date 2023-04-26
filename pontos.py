@@ -5,9 +5,9 @@ import numpy as np
 
 
 class Pontos(object):
-    def __init__(self, row, column):
+    def __init__(self, linha, column):
         self.nome = PONTOS
-        self.posicao = Vetor2(column * LARGURANO, row * ALTURANO)
+        self.posicao = Vetor2(column * LARGURANO, linha * ALTURANO)
         self.cor = BRANCO
         self.radius = int(2 * LARGURANO / 16)
         self.collideRadius = 2 * LARGURANO / 16
@@ -22,8 +22,8 @@ class Pontos(object):
 
 
 class PowerPellet(Pontos):
-    def __init__(self, row, column):
-        Pontos.__init__(self, row, column)
+    def __init__(self, linha, column):
+        Pontos.__init__(self, linha, column)
         self.nome = PONTOPODER
         self.radius = int(8 * LARGURANO / 16)
         self.points = 50
@@ -50,12 +50,12 @@ class GrupoPontos(object):
 
     def createPelletList(self, pelletfile):
         data = self.readPelletfile(pelletfile)
-        for row in range(data.shape[0]):
+        for linha in range(data.shape[0]):
             for col in range(data.shape[1]):
-                if data[row][col] in ['.', '+']:
-                    self.listaPontos.append(Pontos(row, col))
-                elif data[row][col] in ['P', 'p']:
-                    pp = PowerPellet(row, col)
+                if data[linha][col] in ['.', '+']:
+                    self.listaPontos.append(Pontos(linha, col))
+                elif data[linha][col] in ['P', 'p']:
+                    pp = PowerPellet(linha, col)
                     self.listaPontos.append(pp)
                     self.powerpellets.append(pp)
 
