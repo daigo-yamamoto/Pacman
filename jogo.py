@@ -4,7 +4,7 @@ from constantes import *
 from pacman import Pacman
 from no import GrupoNo
 from pontos import GrupoPontos
-from fantasma import Fantasma
+from fantasma import GrupoFantasma
 
 class GameController(object):
     def __init__(self):
@@ -23,10 +23,10 @@ class GameController(object):
         homekey = self.no.createHomeNodes(11.5, 14)
         self.no.conectaNoCasa(homekey, (12, 14), ESQUERDA)
         self.no.conectaNoCasa(homekey, (15, 14), DIREITA)
-        self.pacman = Pacman(self.no.pegaNoInicial())
+        self.pacman = Pacman(self.no.pegaNoTiles(15,26))
         self.pontos = GrupoPontos("mapa.txt")
-        self.fantasma = Fantasma(self.no.pegaNoInicial(), self.pacman)
-        self.fantasma.defienNoSpawn(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
+        self.fantasma = GrupoFantasma(self.no.pegaNoInicial(), self.pacman)
+        self.fantasma.defineNoSpawn(self.no.pegaNoTiles(2 + 11.5, 3 + 14))
 
     def atualiza(self):
         dt = self.tempo.tick(30) / 1000.0
@@ -44,9 +44,10 @@ class GameController(object):
                 exit()
 
     def checaEventoFantasma(self):
-        if self.pacman.collideGhost(self.fantasma):
-            if self.fantasma.modo.atual is ALEATORIO:
-                self.fantasma.comecaSpawn()
+        for fantasma in self.fantasma:
+            if self.pacman.collideGhost(fantasma):
+                if fantasma.modo.atual is ALEATORIO:
+                    fantasma.comecaSpawn()
 
     def desenha(self):
         self.tela.blit(self.tela_fundo, (0,0))
@@ -62,7 +63,7 @@ class GameController(object):
             self.pontos.num_pontos_comidos += 1
             self.pontos.lista_pontos.remove(ponto)
             if ponto.nome == PONTOSPODER:
-                self.fantasma.startFreight()
+                self.fantasma.comecaAleatorio()
 
 if __name__ == "__main__":
     jogo = GameController()

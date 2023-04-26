@@ -6,7 +6,7 @@ from random import randint
 
 class Andarilhos(object):
     def __init__(self, no):
-        self.name = None
+        self.nome = None
         self.direcoes = {CIMA: Vetor2(0, -1), BAIXO: Vetor2(0, 1),
                          ESQUERDA: Vetor2(-1, 0), DIREITA: Vetor2(1, 0), PARADO: Vetor2()}
         self.direcao = PARADO
@@ -99,3 +99,9 @@ class Andarilhos(object):
                 self.alvo = self.pegaNovoAlvo(self.direcao)
 
             self.definePosicao()
+
+    def reset(self):
+        self.setStartNode(self.startNode)
+        self.direction = PARADO
+        self.speed = 100
+        self.visivel = True
