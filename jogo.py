@@ -8,6 +8,7 @@ from fantasma import GrupoFantasma
 from fruta import Fruta
 from pausa import Pausa
 from sprites import LifeSprites
+from sprites import MazeSprites
 
 
 class GameController(object):
@@ -40,6 +41,8 @@ class GameController(object):
 
     def comecaJogo(self):
         self.setTelaFundo()
+        self.mazesprites = MazeSprites("mapa.txt", "mapa_rotacionado.txt")
+        self.tela_fundo = self.mazesprites.constructBackground(self.tela_fundo, 1)
         self.no = GrupoNo("mapa.txt")
         homekey = self.no.createHomeNodes(11.5, 14)
         self.no.conectaNoCasa(homekey, (12, 14), ESQUERDA)
@@ -135,7 +138,6 @@ class GameController(object):
 
     def desenha(self):
         self.tela.blit(self.tela_fundo, (0,0))
-        self.no.desenha(self.tela)
         self.pontos.desenha(self.tela)
         if self.fruta is not None:
             self.fruta.desenha(self.tela)

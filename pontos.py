@@ -8,15 +8,16 @@ class Pontos(object):
         self.nome = PONTOS
         self.posicao = Vetor2(coluna * LARGURA_NO, linha * ALTURA_NO)
         self.cor = BRANCO
-        self.raio = int(4 * LARGURA_NO / 16)
-        self.raio_colisao = int(4 * LARGURA_NO / 16)
+        self.raio = int(2 * LARGURA_NO / 16)
+        self.raio_colisao = int(2 * LARGURA_NO / 16)
         self.pontos = 10
         self.visivel = True
 
     def desenha(self, tela):
         if self.visivel:
-            p = self.posicao.intTupla()
-            pygame.draw.circle(tela, self.cor, p, self.raio)
+            ajuste = Vetor2(LARGURA_NO, ALTURA_NO) / 2
+            p = self.posicao + ajuste
+            pygame.draw.circle(tela, self.cor, p.intTupla(), self.raio)
 
 
 class PontoPoder(Pontos):
