@@ -5,6 +5,10 @@ Capybaras in CTA é uma variação do tradicional, famoso e amado por todos, Pac
 Há algumas homenagens a queridos colegas e professores que foram explicados com mais detalhes na apresentação do projeto e que podem servir de easter eggs.
 Pac-Man apesar de ser um jogo relativamente antigo, é bastante interessante por conter alguns conceitos diferentes e que podem ser mais explorados, como por exemplo, o uso da inteligência artificial na construção das personalidades de cada fantasma, o comportamento early, mid e late stage de cada fase, previsão de rotas para interceptação, imprevisibilidade e probabilidades.
 
+
+https://user-images.githubusercontent.com/128277005/234746065-194cfe82-e9e4-45c0-b495-7967a247f85f.mp4
+
+
 ## How to play
 Baixe os arquivos do jogo e execute o comando “py jogo.py” no terminal. Use as setas do teclado para movimentar a capivara, fuja dos fantasmas, pegue o máximo de pontos que conseguir. Os círculos brancos grandes lhe darão o poder de comer os fantasmas enquanto estes estiverem azul escuro, que é um modo "assustado". Divirta-se!
 
