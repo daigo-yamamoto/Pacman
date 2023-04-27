@@ -110,6 +110,64 @@ Aqui quando nós detectamos que uma tecla de direção válida foi acionada nós
 Classe Fruta:
 Quando criamos um objeto de fruta, apenas colocamos esse objeto de fruta entre dois nós. Apesar de não andar, ela herdará a classe andarilhos por conveniência. Aqui faremos a fruta ser criada e ter uma duração de 5 segundos o método de atualização acompanhará esse tempo.
 
+# pontos.py
+
+Aqui serão criados os pontos que o pacman irá “comer” durante o jogo:
+
+Classe Pontos:
+Essa é a classe dos pontos normais que serão apenas círculos de raio pequeno
+
+Classe PowerPellet:
+Essa é classe dos pontos especiais que quando ingeridos pelo pacman lhe darão o poder de comer os fantasmas, eles serão círculos grandes de raio maior.
+![image](https://user-images.githubusercontent.com/128277005/234744178-fdd2d651-77ac-440e-afdc-e186c419e104.png)
+
+# pausa.py
+
+Classe Pausa:
+Há uma variável pausada que pode ser True ou False. Há também um timer e um pauseTime. Nós os temos porque podemos (e queremos) ter a funcionalidade de pausar apenas por um período de tempo específico. Normalmente, pauseTime será None, o que significa que não há limite de tempo para uma pausa, como quando o jogador pressiona a barra de espaço. 
 
 
+# sprites.py
+
+
+Nesse arquivo importaremos as sprites do .png e faremos a interface para atribuí-las a cada classe do jogo necessária.
+Esse spritesheet tem os frames de movimento da capivara, dos fantasmas, dos power ups e da criação dos labirintos. O spritesheet foi feito com base no projeto open-source: https://rainloaf.itch.io/capybara-sprite-sheet. 
+Segue uma pré-visualização do arquivo png usado “spritesheetfinal.png”:
+![image](https://user-images.githubusercontent.com/128277005/234744431-17bb3305-cc66-4029-86aa-a4a2e79a535c.png)
+![image](https://user-images.githubusercontent.com/128277005/234744491-271dfdb2-89ff-4357-97a8-c351530d9eab.png)
+
+# jogo.py
+
+Este arquivo é o ponto de entrada para o nosso jogo, ou seja, o arquivo principal que quando rodado iniciará o jogo. Para isso teremos uma main nele, essa main cria uma instância da classe GameController, chama o método começar jogo e faz o loop com o método que atualiza o jogo:
+![image](https://user-images.githubusercontent.com/128277005/234744531-612d0a2b-c4aa-450c-a173-421e40e581ac.png)
+
+Classe GameController:
+
+Inicialização:
+Primeiro inicializamos o pygame, definimos a tela usando as constantes e chamamos um método que configura a tela de fundo:
+![image](https://user-images.githubusercontent.com/128277005/234744592-e8d15de2-0a38-4957-bdfa-7eefcd2f8cea.png)
+
+inicializamos o "relógio" do jogo:
+![image](https://user-images.githubusercontent.com/128277005/234744636-0a41fb96-3ac8-417b-8bf1-2eca5932ac1f.png)
+
+Método tela de fundo ( definePlanoFundo() ):
+criamos a tela de fundo e colocamos a cor preto nela:
+![image](https://user-images.githubusercontent.com/128277005/234744676-cbaf6324-9e28-4239-b02a-62ea6c893ab4.png)
+
+Método começar jogo ( iniciaJogo() ):
+Começamos chamando o método que configura a tela de fundo:
+![image](https://user-images.githubusercontent.com/128277005/234744710-6cd30311-2016-48e3-8d77-c1a832a8ed39.png)
+Criamos os objetos pacman, pontos e fantasmas:
+![image](https://user-images.githubusercontent.com/128277005/234744735-fc9c6f87-8a01-487a-b900-53956369841f.png)
+
+Método atualiza (atualiza()):
+Esse método é basicamente o loop do jogo, ele checará os eventos do jogo fará atualizações e desenhará a nova situação. Começamos achando o quanto de tempo passa a cada loop e guardando na variável dt, isso é importante pois cada computador terá uma variável dt diferente dependendo da velocidade com que foi feito o loop na máquina, ter acesso a esse valor é o que nos permitirá equalizar o tempo do jogo para que em qualquer computador a velocidade do jogo seja a mesma quando este estiver rodando:
+
+![image](https://user-images.githubusercontent.com/128277005/234744776-9c07f6f0-4a25-4a39-82c2-6937239507e4.png)
+
+
+
+Método desenha (desenha()):
+Começamos redesenhando a tela de fundo a fim de apagar todos os desenhos do loop anterior para que a movimentação dos andarilhos (pacman e fantasmas) não gere rastros, posteriormente desenhamos os pontos, as frutas, o pacman e os fantasmas:
+![image](https://user-images.githubusercontent.com/128277005/234744838-ba04e46d-3386-4538-b765-8056dc3a9cd8.png)
 
