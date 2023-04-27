@@ -25,20 +25,24 @@ As coordenadas x e y são apenas as coordenadas para as quais o vetor aponta, in
 
 Métodos aritméticos:
 Esses métodos basicamente irão permitir a adição e subtração de vetores, sua multiplicação e divisão, bem como checar a igualdade entre eles. 
+
 ![image](https://user-images.githubusercontent.com/128277005/234742855-8ad2e04e-2506-45c8-a8bc-977a005ce148.png)
 
 Métodos de magnitude:
 Aqui nós temos dois métodos, um deles retorna o tamanho real do vetor usando a operação sqrt e outro retorna tal tamanho ao quadrado. É bom ter os dois pois sempre que pudermos evitar a operação raíz durante o jogo é bom evitá-la. Por exemplo, quando queremos apenas comparar o tamanho de dois vetores podemos usar o método que retorna o tamanho ao quadrado, economizando a operação math.sqrt():
+
 ![image](https://user-images.githubusercontent.com/128277005/234742897-44c3e828-75b8-46c8-be9a-561c8e040e95.png)
 
 Métodos de cópia:
 Os métodos de cópia retornam uma cópia do vetor para que nós tenhamos uma nova instância dele para que mexamos nela sem alterá-lo, fazemos isso de três maneiras diferentes métodos um retorna um vetor, outro uma tupla e outro uma tupla de inteiros:
+
 ![image](https://user-images.githubusercontent.com/128277005/234742939-f60a57fd-d749-4cf1-9009-1a8b670e6055.png)
 
 # no.py
 
 Classe No:
-Aqui nós criamos os nós que serão a base da movimentação do pacman, basicamente o pacman poderá apenas circular na malha de nós e a partir dos nós faremos o mapa. Na imagem abaixo, os nós são os círculos vermelhos e o pacman o círculo amarelo, o pacman só pode andar entre os caminhos que ligam os nós. 
+Aqui nós criamos os nós que serão a base da movimentação do pacman, basicamente o pacman poderá apenas circular na malha de nós e a partir dos nós faremos o mapa. Na imagem abaixo, os nós são os círculos vermelhos e o pacman o círculo amarelo, o pacman só pode andar entre os caminhos que ligam os nós.
+
 ![image](https://user-images.githubusercontent.com/128277005/234742984-e8e9a3b1-dd26-4649-a38a-a303c90c4b2f.png)
 
 
@@ -99,6 +103,7 @@ Aqui nós checamos constantemente se alguma tecla válida de direção está sen
 
 Método de capturar direção (getChaveValida()):
 Aqui quando nós detectamos que uma tecla de direção válida foi acionada nós retornamos sua direção correspondente, se nenhuma tecla é acionada pelo operador o retorno será simplesmente PARADO, para que não haja nenhuma mudança de direção.
+
 ![image](https://user-images.githubusercontent.com/128277005/234743832-c961de73-2101-409e-86b8-c390f74c8e49.png)
 
 # fruta.py
@@ -127,31 +132,39 @@ Há uma variável pausada que pode ser True ou False. Há também um timer e um 
 Nesse arquivo importaremos as sprites do .png e faremos a interface para atribuí-las a cada classe do jogo necessária.
 Esse spritesheet tem os frames de movimento da capivara, dos fantasmas, dos power ups e da criação dos labirintos. O spritesheet foi feito com base no projeto open-source: https://rainloaf.itch.io/capybara-sprite-sheet. 
 Segue uma pré-visualização do arquivo png usado “spritesheetfinal.png”:
+
 ![image](https://user-images.githubusercontent.com/128277005/234744431-17bb3305-cc66-4029-86aa-a4a2e79a535c.png)
+
 ![image](https://user-images.githubusercontent.com/128277005/234744491-271dfdb2-89ff-4357-97a8-c351530d9eab.png)
 
 # jogo.py
 
 Este arquivo é o ponto de entrada para o nosso jogo, ou seja, o arquivo principal que quando rodado iniciará o jogo. Para isso teremos uma main nele, essa main cria uma instância da classe GameController, chama o método começar jogo e faz o loop com o método que atualiza o jogo:
+
 ![image](https://user-images.githubusercontent.com/128277005/234744531-612d0a2b-c4aa-450c-a173-421e40e581ac.png)
 
 Classe GameController:
 
 Inicialização:
 Primeiro inicializamos o pygame, definimos a tela usando as constantes e chamamos um método que configura a tela de fundo:
+
 ![image](https://user-images.githubusercontent.com/128277005/234745367-ddecce10-5e29-40f3-9110-012340b02495.png)
 
 inicializamos o "relógio" do jogo:
+
 ![image](https://user-images.githubusercontent.com/128277005/234744636-0a41fb96-3ac8-417b-8bf1-2eca5932ac1f.png)
 
-Método tela de fundo ( definePlanoFundo() ):
+Método tela de fundo (definePlanoFundo()):
 criamos a tela de fundo e colocamos a cor preto nela:
+
 ![image](https://user-images.githubusercontent.com/128277005/234744676-cbaf6324-9e28-4239-b02a-62ea6c893ab4.png)
 
-Método começar jogo ( iniciaJogo() ):
+Método começar jogo (iniciaJogo()):
 Começamos chamando o método que configura a tela de fundo:
+
 ![image](https://user-images.githubusercontent.com/128277005/234744710-6cd30311-2016-48e3-8d77-c1a832a8ed39.png)
 Criamos os objetos pacman, pontos e fantasmas:
+
 ![image](https://user-images.githubusercontent.com/128277005/234744735-fc9c6f87-8a01-487a-b900-53956369841f.png)
 
 Método atualiza (atualiza()):
@@ -163,5 +176,6 @@ Esse método é basicamente o loop do jogo, ele checará os eventos do jogo far�
 
 Método desenha (desenha()):
 Começamos redesenhando a tela de fundo a fim de apagar todos os desenhos do loop anterior para que a movimentação dos andarilhos (pacman e fantasmas) não gere rastros, posteriormente desenhamos os pontos, as frutas, o pacman e os fantasmas:
+
 ![image](https://user-images.githubusercontent.com/128277005/234744838-ba04e46d-3386-4538-b765-8056dc3a9cd8.png)
 
