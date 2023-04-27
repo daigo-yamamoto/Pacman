@@ -6,7 +6,7 @@ Há algumas homenagens a queridos colegas e professores que foram explicados com
 Pac-Man apesar de ser um jogo relativamente antigo, é bastante interessante por conter alguns conceitos diferentes e que podem ser mais explorados, como por exemplo, o uso da inteligência artificial na construção das personalidades de cada fantasma, o comportamento early, mid e late stage de cada fase, previsão de rotas para interceptação, imprevisibilidade e probabilidades.
 
 
-https://user-images.githubusercontent.com/128277005/234746065-194cfe82-e9e4-45c0-b495-7967a247f85f.mp4
+https://user-images.githubusercontent.com/128277005/234746286-228e1c19-8c14-46a7-ba00-c0d5dda28e02.mp4
 
 
 ## How to play
