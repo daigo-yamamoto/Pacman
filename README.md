@@ -78,15 +78,12 @@ Classe GrupoFantasma:
 Durante o jogo os fantasmas sempre estarão em um dos quatro diferentes modos. A diferença destes modos é basicamente o objetivo dos fantasmas:
 
 Espalhamento (inicio): Este modo diz aos fantasmas para se espalharem para um dos quatro cantos do labirinto. Cada fantasma terá o seu tipo de espalhamento (um dos quatro cantos), todos os fantasmas começam neste modo e após 7 segundos mudam para o modo perseguição, 20 segundos depois eles voltam para esse modo e assim sucessivamente até que ocorra algum evento que faça eles irem para o modo assustado ou morte.
-![image](https://user-images.githubusercontent.com/128277005/234743589-efa4d0e4-2081-46b1-bab2-c802e3a214ab.png)
-
 
 Perseguir (perseguir): esse, como o modo de dispersão, é diferente para todos os fantasmas. Em geral, cada fantasma tem uma maneira de rastrear o Pacman. A mais simples delas é ter apenas a posição do Pacman como meta. 
 
 Assustado (aleatório): Quando Pacman come um Power Pellet (círculo branco grande), os fantasmas ficam vulneráveis e o Pacman é capaz de comê-los. Durante este modo, os fantasmas se movem pelo labirinto aleatoriamente e mais devagar. 
 
 Morte (spawn): Este é o modo em que os fantasmas ficam depois que Pacman os come. Nesse modo, o objetivo deles é chegar ao local de desova, para que possam reaparecer (vemos apenas seus olhinhos voltando). Eles também se movem muito mais rápido neste modo. Eles permanecem neste modo até chegarem ao local de desova.
-
 
 Classe ModoPrincipal:
 Podemos pensar no modo de espalhamento e de perseguição como modos principais e todos os outros como modos de interrupção, pois na verdade durante todo o jogo esses modos ficarão alternando segundo o tempo que definirmos. Ao longo do jogo, todos os fantasmas devem ser sincronizados com o espalhamento e a perseguição ao mesmo tempo. Portanto, deve haver algum objeto que alterna continuamente entre esses modos, independentemente do que os fantasmas estão fazendo. Os fantasmas podem entrar individualmente em um dos modos de interrupção, mas uma vez terminados, eles podem descobrir facilmente se devem estar em espalhamento ou perseguição perguntando ao objeto do modo principal.
@@ -96,8 +93,6 @@ Essa classe foi criada para controlar os modos e para que possamos sempre saber 
 
 # pacman.py
 Aqui nós criaremos a classe pacman, ela terá a classe andarilhos como classe pai e herdará da mesma várias propriedades.
-
-![image](https://user-images.githubusercontent.com/128277005/234743725-ca4d947f-c099-4ee8-ab8c-d6a68e131c4a.png)
 
 Método de atualização, (atualiza()):
 Aqui nós checamos constantemente se alguma tecla válida de direção está sendo pressionada pelo jogador, e depois usamos essa direção para mover o PacMan.
@@ -119,7 +114,6 @@ Essa é a classe dos pontos normais que serão apenas círculos de raio pequeno
 
 Classe PowerPellet:
 Essa é classe dos pontos especiais que quando ingeridos pelo pacman lhe darão o poder de comer os fantasmas, eles serão círculos grandes de raio maior.
-![image](https://user-images.githubusercontent.com/128277005/234744178-fdd2d651-77ac-440e-afdc-e186c419e104.png)
 
 # pausa.py
 
@@ -145,7 +139,7 @@ Classe GameController:
 
 Inicialização:
 Primeiro inicializamos o pygame, definimos a tela usando as constantes e chamamos um método que configura a tela de fundo:
-![image](https://user-images.githubusercontent.com/128277005/234744592-e8d15de2-0a38-4957-bdfa-7eefcd2f8cea.png)
+![image](https://user-images.githubusercontent.com/128277005/234745367-ddecce10-5e29-40f3-9110-012340b02495.png)
 
 inicializamos o "relógio" do jogo:
 ![image](https://user-images.githubusercontent.com/128277005/234744636-0a41fb96-3ac8-417b-8bf1-2eca5932ac1f.png)
